@@ -1,0 +1,24 @@
+# Build output
+dist/
+*.exe
+
+# Reports and logs
+reports/*
+!reports/.gitkeep
+*.log
+*.csv
+*.json
+*.html
+*.zip
+
+# PowerShell temp files
+*.tmp
+*.bak
+
+# Windows
+Thumbs.db
+desktop.ini
+
+# IDE
+.vscode/
+.idea/
