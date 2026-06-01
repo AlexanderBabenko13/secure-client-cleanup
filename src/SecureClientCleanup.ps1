@@ -118,7 +118,7 @@ Ensure-Admin
             <UniformGrid Columns="1" Rows="4" Margin="0,0,0,8">
               <GroupBox Header="Режимы" Background="#FFFFFF" BorderBrush="#D0D7E2" BorderThickness="1" Margin="0,0,0,8">
                 <StackPanel Margin="10">
-                  <CheckBox x:Name="cbFull" Content="Полная очистка" IsChecked="True" Margin="0,4"/>
+                  <CheckBox x:Name="cbFull" Content="Полная очистка" IsChecked="False" Margin="0,4"/>
                   <CheckBox x:Name="cbServices" Content="Только службы/процессы" Margin="0,4"/>
                   <CheckBox x:Name="cbFolders" Content="Только папки (включая AppData)" Margin="0,4"/>
                   <CheckBox x:Name="cbRegistry" Content="Только реестр" Margin="0,4"/>
@@ -127,8 +127,8 @@ Ensure-Admin
 
               <GroupBox Header="Область пользователей (AppData)" Background="#FFFFFF" BorderBrush="#D0D7E2" BorderThickness="1" Margin="0,0,0,8">
                 <StackPanel Margin="10">
-                  <RadioButton x:Name="rbCurrent" Content="Только текущий пользователь" IsChecked="False" Margin="0,4"/>
-                  <RadioButton x:Name="rbAll" Content="Все профили пользователей (рекомендуется)" IsChecked="True" Margin="0,4"/>
+                  <RadioButton x:Name="rbCurrent" Content="Только текущий пользователь" IsChecked="True" Margin="0,4"/>
+                  <RadioButton x:Name="rbAll" Content="Все профили пользователей (требует осознанного выбора)" IsChecked="False" Margin="0,4"/>
                 </StackPanel>
               </GroupBox>
 
@@ -143,7 +143,7 @@ Ensure-Admin
 
               <GroupBox Header="Защита" Background="#FFFFFF" BorderBrush="#D0D7E2" BorderThickness="1">
                 <StackPanel Margin="10">
-                  <CheckBox x:Name="cbRestorePoint" Content="Создать точку восстановления" Margin="0,4" IsChecked="True"/>
+                  <CheckBox x:Name="cbRestorePoint" Content="Создать точку восстановления" Margin="0,4" IsChecked="False"/>
                   <CheckBox x:Name="cbSelectionOnly" Content="Действовать только по выбранным строкам (✔)" Margin="0,4"/>
                 </StackPanel>
               </GroupBox>
@@ -248,24 +248,63 @@ function Write-Diag([string]$Message){
 # ── Цели очистки ───────────────────────────────────────────────────────────────
 $Services   = @("vpnagent","cvpnd","vpnva")
 $Processes  = @("vpnui","vpnagent","cvpnd","ciscoap")
-$RegistryKeys= @("HKLM:\SOFTWARE\Cisco",
-                 "HKLM:\SOFTWARE\WOW6432Node\Cisco",
-                 "HKLM:\SYSTEM\CurrentControlSet\Services\vpnagent",
-                 "HKLM:\SYSTEM\CurrentControlSet\Services\cvpnd",
-                 "HKLM:\SYSTEM\CurrentControlSet\Services\vpnva",
-                 "HKCU:\Software\Cisco")
+$ProgramFilesX86 = [Environment]::GetEnvironmentVariable('ProgramFiles(x86)')
 
-$ProgramFolders = @(
-  "$env:ProgramFiles\Cisco",
-  "$env:ProgramFiles\Cisco AnyConnect Secure Mobility Client",
-  "$env:ProgramFiles\Cisco AnyConnect",
-  "$env:ProgramFiles\Cisco Systems",
-  "$env:ProgramFiles(x86)\Cisco",
-  "$env:ProgramFiles(x86)\Cisco AnyConnect Secure Mobility Client",
-  "$env:ProgramFiles(x86)\Cisco AnyConnect",
-  "$env:ProgramData\Cisco",
-  "$env:ProgramData\Cisco Systems"
+$RegistryKeys = @(
+  "HKLM:\SYSTEM\CurrentControlSet\Services\vpnagent",
+  "HKLM:\SYSTEM\CurrentControlSet\Services\cvpnd",
+  "HKLM:\SYSTEM\CurrentControlSet\Services\vpnva"
 )
+
+$ProgramFolderNames = @(
+  "Cisco AnyConnect Secure Mobility Client",
+  "Cisco AnyConnect",
+  "Cisco Secure Client",
+  "Cisco Secure Client\VPN",
+  "Cisco Secure Client\ISE Posture",
+  "Cisco Secure Client\Diagnostics and Reporting Tool",
+  "Cisco Secure Client\Umbrella",
+  "Cisco Secure Client\Network Access Manager"
+)
+$ProgramFolders = @(
+  foreach($name in $ProgramFolderNames) {
+    if ($env:ProgramFiles) { Join-Path $env:ProgramFiles $name }
+    if ($ProgramFilesX86) { Join-Path $ProgramFilesX86 $name }
+  }
+) | Where-Object { -not [string]::IsNullOrWhiteSpace($_) } | Sort-Object -Unique
+
+$BlockedRegistryRoots = @(
+  "HKLM:\SOFTWARE\Cisco",
+  "HKLM:\SOFTWARE\WOW6432Node\Cisco",
+  "HKCU:\Software\Cisco"
+)
+$BlockedFolderRoots = @(
+  if ($env:ProgramFiles) { Join-Path $env:ProgramFiles "Cisco" }
+  if ($env:ProgramFiles) { Join-Path $env:ProgramFiles "Cisco Systems" }
+  if ($ProgramFilesX86) { Join-Path $ProgramFilesX86 "Cisco" }
+  if ($ProgramFilesX86) { Join-Path $ProgramFilesX86 "Cisco Systems" }
+  if ($env:ProgramData) { Join-Path $env:ProgramData "Cisco" }
+  if ($env:ProgramData) { Join-Path $env:ProgramData "Cisco Systems" }
+) | Where-Object { -not [string]::IsNullOrWhiteSpace($_) } | Sort-Object -Unique
+
+function Normalize-SafetyPath([string]$Path){
+  if ([string]::IsNullOrWhiteSpace($Path)) { return "" }
+  return ([Environment]::ExpandEnvironmentVariables($Path).TrimEnd('\')).ToLowerInvariant()
+}
+function Test-IsBlockedCleanupTarget([string]$Target,[string]$Kind){
+  $normalized = Normalize-SafetyPath $Target
+  $blocked = if ($Kind -eq "Registry") { $BlockedRegistryRoots } else { $BlockedFolderRoots }
+  foreach($root in $blocked){
+    if ($normalized -eq (Normalize-SafetyPath $root)) { return $true }
+  }
+  return $false
+}
+function Test-IsBlockedRegistryRoot([string]$Key){
+  return (Test-IsBlockedCleanupTarget -Target $Key -Kind "Registry")
+}
+function Test-IsBlockedFolderRoot([string]$Path){
+  return (Test-IsBlockedCleanupTarget -Target $Path -Kind "Folder")
+}
 
 # ── Профили пользователей ─────────────────────────────────────────────────────
 function Get-UserProfiles {
@@ -418,6 +457,10 @@ function Remove-CiscoServices([bool]$WhatIf,$Selection){
 function Remove-CiscoFolders([bool]$WhatIf,[bool]$Backup,[bool]$Force,$Selection){
   $targets = if ($Selection){ $Selection | ? {$_.Category -eq "Folder"} | % { $_.Name } } else { Get-TargetFolders }
   foreach($path in $targets){
+    if (Test-IsBlockedFolderRoot $path){
+      Write-UILog ("BLOCKED safety: broad Cisco folder will not be removed: {0}" -f $path) "WARN"
+      continue
+    }
     if (Test-Path $path){
       if ($WhatIf){ Write-UILog ("WHATIF: remove dir {0}" -f $path) }
       else{
@@ -451,6 +494,10 @@ function Remove-CiscoFolders([bool]$WhatIf,[bool]$Backup,[bool]$Force,$Selection
 function Remove-CiscoRegistry([bool]$WhatIf,[bool]$Backup,$Selection){
   $targets = if ($Selection){ $Selection | ? {$_.Category -eq "Registry"} | % { $_.Name } } else { $RegistryKeys }
   foreach($key in $targets){
+    if (Test-IsBlockedRegistryRoot $key){
+      Write-UILog ("BLOCKED safety: broad Cisco registry root will not be removed: {0}" -f $key) "WARN"
+      continue
+    }
     if (Test-Path $key){
       if ($WhatIf){ Write-UILog ("WHATIF: remove reg {0}" -f $key) }
       else{
@@ -640,7 +687,8 @@ function Create-RestorePoint {
 function Run-Flow([bool]$full,[bool]$svc,[bool]$folders,[bool]$reg,[bool]$backup,[bool]$force,[bool]$whatif,[bool]$html,[bool]$restore,[bool]$selectionOnly){
   $sel = if ($selectionOnly){ Get-SelectedItems } else { $null }
   Write-UILog ("Запуск: full={0} svc={1} folders={2} reg={3} backup={4} force={5} whatif={6} users={7}" -f $full,$svc,$folders,$reg,$backup,$force,$whatif,($(if($controls.rbAll.IsChecked){"ALL"}else{"CURRENT"})))
-  if ($restore){ Create-RestorePoint }
+  if ($restore -and -not $whatif){ Create-RestorePoint }
+  elseif ($restore -and $whatif){ Write-UILog "WHATIF: restore point creation skipped for dry run" }
 
   if ($full -or $svc){ Stop-CiscoProcesses $whatif $sel; Stop-CiscoServices $whatif $sel; Remove-CiscoServices $whatif $sel }
   if ($full -or $folders){ Remove-CiscoFolders $whatif $backup $force $sel }
@@ -665,7 +713,7 @@ $controls.btnOpenLog.Add_Click({ $p=Resolve-Env $controls.tbLogPath.Text; if(Tes
 $controls.btnOpenHtml.Add_Click({ $p=Resolve-Env $controls.tbHtmlPath.Text; if(Test-Path $p){ Start-Process $p } })
 $controls.btnAnalyze.Add_Click({
   $controls.tbConsole.Clear()
-  Run-Flow ($controls.cbFull.IsChecked) ($controls.cbServices.IsChecked) ($controls.cbFolders.IsChecked) ($controls.cbRegistry.IsChecked) ($controls.cbBackup.IsChecked) ($controls.cbForce.IsChecked) $true ($controls.cbHtml.IsChecked) ($controls.cbRestorePoint.IsChecked) ($controls.cbSelectionOnly.IsChecked)
+  Run-Flow ($controls.cbFull.IsChecked) ($controls.cbServices.IsChecked) ($controls.cbFolders.IsChecked) ($controls.cbRegistry.IsChecked) ($controls.cbBackup.IsChecked) ($controls.cbForce.IsChecked) $true ($controls.cbHtml.IsChecked) $false ($controls.cbSelectionOnly.IsChecked)
 })
 $controls.btnRun.Add_Click({
   $controls.tbConsole.Clear()
