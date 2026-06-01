@@ -1,4 +1,4 @@
-#requires -version 5.1
+﻿#requires -version 5.1
 <# 
   Cisco Cleanup Toolkit — FirstBitEdition (GUI)
   - Очистка Cisco AnyConnect (службы/процессы/папки/реестр)
@@ -717,9 +717,24 @@ $controls.btnAnalyze.Add_Click({
 })
 $controls.btnRun.Add_Click({
   $controls.tbConsole.Clear()
-  $r=[System.Windows.MessageBox]::Show("Вы уверены? Очистка может затронуть сетевой стек.","Подтверждение","YesNo","Warning")
-  if($r -eq "Yes"){
-    Run-Flow ($controls.cbFull.IsChecked) ($controls.cbServices.IsChecked) ($controls.cbFolders.IsChecked) ($controls.cbRegistry.IsChecked) ($controls.cbBackup.IsChecked) ($controls.cbForce.IsChecked) ($controls.cbWhatIf.IsChecked) ($controls.cbHtml.IsChecked) ($controls.cbRestorePoint.IsChecked) ($controls.cbSelectionOnly.IsChecked)
+  $r = [System.Windows.MessageBox]::Show(
+    "Are you sure? Cleanup may affect the network stack.",
+    "Confirmation",
+    "YesNo",
+    "Warning"
+  )
+  if ($r -eq "Yes") {
+    Run-Flow `
+      ($controls.cbFull.IsChecked) `
+      ($controls.cbServices.IsChecked) `
+      ($controls.cbFolders.IsChecked) `
+      ($controls.cbRegistry.IsChecked) `
+      ($controls.cbBackup.IsChecked) `
+      ($controls.cbForce.IsChecked) `
+      ($controls.cbWhatIf.IsChecked) `
+      ($controls.cbHtml.IsChecked) `
+      ($controls.cbRestorePoint.IsChecked) `
+      ($controls.cbSelectionOnly.IsChecked)
   }
 })
 $controls.btnClose.Add_Click({ $window.Close() })
