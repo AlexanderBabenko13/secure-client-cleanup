@@ -9,38 +9,140 @@
   - Экспорт HTML/CSV/JSON
 #>
 
-# ── WPF требует STA ─────────────────────────────────────────────────────────────
-if ([Threading.Thread]::CurrentThread.ApartmentState -ne 'STA') {
+# ── Bootstrap: elevation + STA ─────────────────────────────────────────────────
+$script:OriginalArgumentList = @($args)
+$script:SelfScriptPath = if ($PSCommandPath) { $PSCommandPath } else { $MyInvocation.MyCommand.Path }
+
+function Test-IsAdministrator {
+  $id = [Security.Principal.WindowsIdentity]::GetCurrent()
+  $principal = New-Object Security.Principal.WindowsPrincipal($id)
+  return $principal.IsInRole([Security.Principal.WindowsBuiltInRole]::Administrator)
+}
+
+function Test-IsStaThread {
+  return ([Threading.Thread]::CurrentThread.ApartmentState -eq 'STA')
+}
+
+function Join-ArgumentList([string[]]$Arguments) {
+  $quoted = foreach ($arg in $Arguments) {
+    if ($null -eq $arg) { '""'; continue }
+
+    $value = [string]$arg
+    if ($value.Length -eq 0) { '""'; continue }
+    if ($value -notmatch '[\s"]') { $value; continue }
+
+    $builder = New-Object System.Text.StringBuilder
+    [void]$builder.Append('"')
+    $backslashes = 0
+    foreach ($ch in $value.ToCharArray()) {
+      if ($ch -eq '\') {
+        $backslashes++
+      } elseif ($ch -eq '"') {
+        [void]$builder.Append('\' * ($backslashes * 2 + 1))
+        [void]$builder.Append('"')
+        $backslashes = 0
+      } else {
+        if ($backslashes -gt 0) {
+          [void]$builder.Append('\' * $backslashes)
+          $backslashes = 0
+        }
+        [void]$builder.Append($ch)
+      }
+    }
+    if ($backslashes -gt 0) {
+      [void]$builder.Append('\' * ($backslashes * 2))
+    }
+    [void]$builder.Append('"')
+    $builder.ToString()
+  }
+
+  return ($quoted -join ' ')
+}
+
+function Get-SelfLaunchInfo {
+  $processPath = [System.Diagnostics.Process]::GetCurrentProcess().MainModule.FileName
+  $processName = Split-Path -Path $processPath -Leaf
+  $scriptPath = $script:SelfScriptPath
+  $isPowerShellHost = $processName -in @('powershell.exe','powershell_ise.exe','pwsh.exe')
+  $isScriptLaunch = $isPowerShellHost -and
+                    -not [string]::IsNullOrWhiteSpace($scriptPath) -and
+                    ([IO.Path]::GetExtension($scriptPath) -ieq '.ps1')
+
+  if ($isScriptLaunch) {
+    return [PSCustomObject]@{
+      Kind = 'Script'
+      FilePath = 'powershell.exe'
+      ScriptPath = [IO.Path]::GetFullPath($scriptPath)
+      Arguments = @($script:OriginalArgumentList)
+    }
+  }
+
+  return [PSCustomObject]@{
+    Kind = 'Executable'
+    FilePath = $processPath
+    ScriptPath = $null
+    Arguments = @($script:OriginalArgumentList)
+  }
+}
+
+function Restart-ScriptElevated {
+  $self = Get-SelfLaunchInfo
+  $psi = New-Object System.Diagnostics.ProcessStartInfo
+
+  # .ps1 must be relaunched through powershell.exe with -File; ps2exe builds must
+  # relaunch the compiled executable itself, otherwise UAC can open an empty host.
+  if ($self.Kind -eq 'Script') {
+    $psi.FileName = $self.FilePath
+    $psi.Arguments = Join-ArgumentList (@('-NoProfile','-ExecutionPolicy','Bypass','-STA','-File',$self.ScriptPath) + $self.Arguments)
+  } else {
+    $psi.FileName = $self.FilePath
+    $psi.Arguments = Join-ArgumentList $self.Arguments
+  }
+
+  $psi.Verb = 'runas'
+  $psi.UseShellExecute = $true
+  [System.Diagnostics.Process]::Start($psi) | Out-Null
+}
+
+function Restart-ScriptInSta {
+  $self = Get-SelfLaunchInfo
+  $psi = New-Object System.Diagnostics.ProcessStartInfo
+
+  # WPF requires an STA thread because its dispatcher and COM-backed UI objects
+  # are apartment-affine. For .ps1 we can force STA via powershell.exe -STA.
+  if ($self.Kind -eq 'Script') {
+    $psi.FileName = $self.FilePath
+    $psi.Arguments = Join-ArgumentList (@('-NoProfile','-ExecutionPolicy','Bypass','-STA','-File',$self.ScriptPath) + $self.Arguments)
+  } else {
+    $psi.FileName = $self.FilePath
+    $psi.Arguments = Join-ArgumentList $self.Arguments
+  }
+
+  $psi.UseShellExecute = $true
+  [System.Diagnostics.Process]::Start($psi) | Out-Null
+}
+
+try {
+  if (-not (Test-IsAdministrator)) {
+    Restart-ScriptElevated
+    exit
+  }
+
+  if (-not (Test-IsStaThread)) {
+    Restart-ScriptInSta
+    exit
+  }
+} catch {
   try {
-    Start-Process -FilePath "powershell.exe" -Verb runas `
-      -ArgumentList "-NoProfile -ExecutionPolicy Bypass -STA -File `"$PSCommandPath`""
-  } catch { }
-  exit
+    Add-Type -AssemblyName System.Windows.Forms -ErrorAction Stop
+    [System.Windows.Forms.MessageBox]::Show("Не удалось перезапустить с нужными правами/STA: $($_.Exception.Message)","Cisco Cleanup","OK","Error") | Out-Null
+  } catch {
+    Write-Error ("Не удалось перезапустить с нужными правами/STA: {0}" -f $_.Exception.Message)
+  }
+  exit 1
 }
 
 Add-Type -AssemblyName PresentationFramework,PresentationCore,WindowsBase,System.Windows.Forms
-
-# ── Повышение прав (перезапускает СЕБЯ как EXE, а не powershell.exe) ────────────
-function Ensure-Admin {
-  try {
-    $id=[Security.Principal.WindowsIdentity]::GetCurrent()
-    $p = New-Object Security.Principal.WindowsPrincipal($id)
-    if (-not $p.IsInRole([Security.Principal.WindowsBuiltInRole]::Administrator)) {
-      $self = [System.Diagnostics.Process]::GetCurrentProcess().MainModule.FileName
-      $psi = New-Object System.Diagnostics.ProcessStartInfo
-      $psi.FileName = $self
-      $psi.Arguments = ""
-      $psi.Verb = "runas"
-      $psi.UseShellExecute = $true
-      [System.Diagnostics.Process]::Start($psi) | Out-Null
-      exit
-    }
-  } catch {
-    [System.Windows.MessageBox]::Show("Не удалось повысить права: $($_.Exception.Message)","Cisco Cleanup","OK","Error") | Out-Null
-    exit 1
-  }
-}
-Ensure-Admin
 
 # ── UI (WPF XAML) ──────────────────────────────────────────────────────────────
 [xml]$xaml = @'
