@@ -148,168 +148,598 @@ Add-Type -AssemblyName PresentationFramework,PresentationCore,WindowsBase,System
 [xml]$xaml = @'
 <Window xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
         xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
-        Title="Cisco Cleanup Toolkit — FirstBitEdition" Height="800" Width="1200"
-        WindowStartupLocation="CenterScreen" Background="#FFFFFF" Foreground="#111111">
-  <Grid Margin="16">
-    <Grid.RowDefinitions>
-      <RowDefinition Height="Auto"/>
-      <RowDefinition Height="*"/>
-      <RowDefinition Height="Auto"/>
-    </Grid.RowDefinitions>
+        Title="Secure Client Cleanup Utility" Height="820" Width="1280"
+        MinHeight="760" MinWidth="1180" WindowStartupLocation="CenterScreen"
+        Background="#0B1020" Foreground="#E5E7EB" FontFamily="Segoe UI">
+  <Window.Resources>
+    <ResourceDictionary>
+      <Color x:Key="ColorBg">#0B1020</Color>
+      <Color x:Key="ColorPanel">#111827</Color>
+      <Color x:Key="ColorPanelAlt">#162033</Color>
+      <Color x:Key="ColorCard">#172033</Color>
+      <Color x:Key="ColorCardSoft">#1B2A44</Color>
+      <Color x:Key="ColorBorder">#31435F</Color>
+      <Color x:Key="ColorText">#E5E7EB</Color>
+      <Color x:Key="ColorMuted">#94A3B8</Color>
+      <Color x:Key="ColorAccent">#38BDF8</Color>
+      <Color x:Key="ColorSuccess">#22C55E</Color>
+      <Color x:Key="ColorWarn">#F59E0B</Color>
+      <Color x:Key="ColorDanger">#EF4444</Color>
 
-    <Border Grid.Row="0" Padding="12" CornerRadius="8" Background="#F5F7FA" BorderBrush="#D0D7E2" BorderThickness="1" Margin="0,0,0,12">
-      <StackPanel>
-        <TextBlock Text="Cisco Cleanup Toolkit — FirstBitEdition" FontSize="24" FontWeight="Bold" Foreground="#00684A"/>
-        <TextBlock Text="⚠ Работает от администратора. Сканирование/Анализ/Диагностика — на отдельных вкладках." 
-                   FontSize="12" Foreground="#946200" Margin="0,6,0,0"/>
-      </StackPanel>
+      <SolidColorBrush x:Key="BrushBg" Color="{StaticResource ColorBg}"/>
+      <SolidColorBrush x:Key="BrushPanel" Color="{StaticResource ColorPanel}"/>
+      <SolidColorBrush x:Key="BrushPanelAlt" Color="{StaticResource ColorPanelAlt}"/>
+      <SolidColorBrush x:Key="BrushCard" Color="{StaticResource ColorCard}"/>
+      <SolidColorBrush x:Key="BrushCardSoft" Color="{StaticResource ColorCardSoft}"/>
+      <SolidColorBrush x:Key="BrushBorder" Color="{StaticResource ColorBorder}"/>
+      <SolidColorBrush x:Key="BrushText" Color="{StaticResource ColorText}"/>
+      <SolidColorBrush x:Key="BrushMuted" Color="{StaticResource ColorMuted}"/>
+      <SolidColorBrush x:Key="BrushAccent" Color="{StaticResource ColorAccent}"/>
+      <SolidColorBrush x:Key="BrushSuccess" Color="{StaticResource ColorSuccess}"/>
+      <SolidColorBrush x:Key="BrushWarn" Color="{StaticResource ColorWarn}"/>
+      <SolidColorBrush x:Key="BrushDanger" Color="{StaticResource ColorDanger}"/>
+
+      <Style TargetType="TextBlock">
+        <Setter Property="Foreground" Value="{StaticResource BrushText}"/>
+        <Setter Property="TextWrapping" Value="Wrap"/>
+      </Style>
+
+      <Style x:Key="TitleText" TargetType="TextBlock">
+        <Setter Property="Foreground" Value="{StaticResource BrushText}"/>
+        <Setter Property="FontSize" Value="26"/>
+        <Setter Property="FontWeight" Value="SemiBold"/>
+      </Style>
+
+      <Style x:Key="SectionTitle" TargetType="TextBlock">
+        <Setter Property="Foreground" Value="{StaticResource BrushText}"/>
+        <Setter Property="FontSize" Value="15"/>
+        <Setter Property="FontWeight" Value="SemiBold"/>
+        <Setter Property="Margin" Value="0,0,0,8"/>
+      </Style>
+
+      <Style x:Key="MutedText" TargetType="TextBlock">
+        <Setter Property="Foreground" Value="{StaticResource BrushMuted}"/>
+        <Setter Property="FontSize" Value="12"/>
+      </Style>
+
+      <Style x:Key="Card" TargetType="Border">
+        <Setter Property="Background" Value="{StaticResource BrushCard}"/>
+        <Setter Property="BorderBrush" Value="{StaticResource BrushBorder}"/>
+        <Setter Property="BorderThickness" Value="1"/>
+        <Setter Property="CornerRadius" Value="14"/>
+        <Setter Property="Padding" Value="12"/>
+        <Setter Property="Margin" Value="0,0,0,10"/>
+      </Style>
+
+      <Style x:Key="SoftCard" TargetType="Border" BasedOn="{StaticResource Card}">
+        <Setter Property="Background" Value="{StaticResource BrushCardSoft}"/>
+        <Setter Property="BorderBrush" Value="#3B5275"/>
+        <Setter Property="CornerRadius" Value="12"/>
+        <Setter Property="Padding" Value="10"/>
+      </Style>
+
+      <Style TargetType="Button">
+        <Setter Property="Background" Value="#22304A"/>
+        <Setter Property="Foreground" Value="{StaticResource BrushText}"/>
+        <Setter Property="BorderBrush" Value="#3B5275"/>
+        <Setter Property="BorderThickness" Value="1"/>
+        <Setter Property="Padding" Value="12,8"/>
+        <Setter Property="MinHeight" Value="36"/>
+        <Setter Property="FontWeight" Value="SemiBold"/>
+        <Setter Property="Cursor" Value="Hand"/>
+        <Setter Property="Template">
+          <Setter.Value>
+            <ControlTemplate TargetType="Button">
+              <Border Background="{TemplateBinding Background}" BorderBrush="{TemplateBinding BorderBrush}"
+                      BorderThickness="{TemplateBinding BorderThickness}" CornerRadius="10" Padding="{TemplateBinding Padding}">
+                <ContentPresenter HorizontalAlignment="Center" VerticalAlignment="Center"/>
+              </Border>
+              <ControlTemplate.Triggers>
+                <Trigger Property="IsMouseOver" Value="True">
+                  <Setter Property="Background" Value="#2F456A"/>
+                  <Setter Property="BorderBrush" Value="{StaticResource BrushAccent}"/>
+                </Trigger>
+                <Trigger Property="IsPressed" Value="True">
+                  <Setter Property="Background" Value="#1B2A44"/>
+                </Trigger>
+                <Trigger Property="IsEnabled" Value="False">
+                  <Setter Property="Opacity" Value="0.45"/>
+                </Trigger>
+              </ControlTemplate.Triggers>
+            </ControlTemplate>
+          </Setter.Value>
+        </Setter>
+      </Style>
+
+      <Style x:Key="AccentButton" TargetType="Button" BasedOn="{StaticResource {x:Type Button}}">
+        <Setter Property="Background" Value="#0EA5E9"/>
+        <Setter Property="BorderBrush" Value="#38BDF8"/>
+        <Setter Property="Foreground" Value="#F8FAFC"/>
+      </Style>
+
+      <Style x:Key="DangerButton" TargetType="Button" BasedOn="{StaticResource {x:Type Button}}">
+        <Setter Property="Background" Value="#7F1D1D"/>
+        <Setter Property="BorderBrush" Value="#EF4444"/>
+      </Style>
+
+      <Style TargetType="CheckBox">
+        <Setter Property="Foreground" Value="{StaticResource BrushText}"/>
+        <Setter Property="Margin" Value="0,5"/>
+        <Setter Property="FontSize" Value="13"/>
+        <Setter Property="VerticalContentAlignment" Value="Center"/>
+        <Setter Property="Template">
+          <Setter.Value>
+            <ControlTemplate TargetType="CheckBox">
+              <Grid>
+                <Grid.ColumnDefinitions>
+                  <ColumnDefinition Width="22"/>
+                  <ColumnDefinition Width="*"/>
+                </Grid.ColumnDefinitions>
+                <Border x:Name="Box" Width="16" Height="16" CornerRadius="4" Background="#0F172A"
+                        BorderBrush="#4B6284" BorderThickness="1.2" HorizontalAlignment="Left" VerticalAlignment="Center"/>
+                <Path x:Name="CheckMark" Grid.Column="0" Data="M 3 8 L 7 12 L 14 4" Stroke="#FFFFFF" StrokeThickness="2"
+                      StrokeStartLineCap="Round" StrokeEndLineCap="Round" Visibility="Collapsed"/>
+                <ContentPresenter Grid.Column="1" VerticalAlignment="Center" RecognizesAccessKey="True"/>
+              </Grid>
+              <ControlTemplate.Triggers>
+                <Trigger Property="IsChecked" Value="True">
+                  <Setter TargetName="Box" Property="Background" Value="{StaticResource BrushAccent}"/>
+                  <Setter TargetName="Box" Property="BorderBrush" Value="{StaticResource BrushAccent}"/>
+                  <Setter TargetName="CheckMark" Property="Visibility" Value="Visible"/>
+                </Trigger>
+                <Trigger Property="IsMouseOver" Value="True">
+                  <Setter TargetName="Box" Property="BorderBrush" Value="#7DD3FC"/>
+                </Trigger>
+                <Trigger Property="IsEnabled" Value="False">
+                  <Setter Property="Opacity" Value="0.45"/>
+                </Trigger>
+              </ControlTemplate.Triggers>
+            </ControlTemplate>
+          </Setter.Value>
+        </Setter>
+      </Style>
+
+      <Style TargetType="RadioButton">
+        <Setter Property="Foreground" Value="{StaticResource BrushText}"/>
+        <Setter Property="Margin" Value="0,5"/>
+        <Setter Property="FontSize" Value="13"/>
+        <Setter Property="VerticalContentAlignment" Value="Center"/>
+        <Setter Property="Template">
+          <Setter.Value>
+            <ControlTemplate TargetType="RadioButton">
+              <Grid>
+                <Grid.ColumnDefinitions>
+                  <ColumnDefinition Width="22"/>
+                  <ColumnDefinition Width="*"/>
+                </Grid.ColumnDefinitions>
+                <Ellipse x:Name="Ring" Width="16" Height="16" Stroke="#4B6284" StrokeThickness="1.3" Fill="#0F172A"
+                         HorizontalAlignment="Left" VerticalAlignment="Center"/>
+                <Ellipse x:Name="Dot" Width="8" Height="8" Fill="{StaticResource BrushAccent}" HorizontalAlignment="Left"
+                         VerticalAlignment="Center" Margin="4,0,0,0" Visibility="Collapsed"/>
+                <ContentPresenter Grid.Column="1" VerticalAlignment="Center" RecognizesAccessKey="True"/>
+              </Grid>
+              <ControlTemplate.Triggers>
+                <Trigger Property="IsChecked" Value="True">
+                  <Setter TargetName="Ring" Property="Stroke" Value="{StaticResource BrushAccent}"/>
+                  <Setter TargetName="Dot" Property="Visibility" Value="Visible"/>
+                </Trigger>
+                <Trigger Property="IsMouseOver" Value="True">
+                  <Setter TargetName="Ring" Property="Stroke" Value="#7DD3FC"/>
+                </Trigger>
+              </ControlTemplate.Triggers>
+            </ControlTemplate>
+          </Setter.Value>
+        </Setter>
+      </Style>
+
+      <Style TargetType="TextBox">
+        <Setter Property="Background" Value="#0F172A"/>
+        <Setter Property="Foreground" Value="{StaticResource BrushText}"/>
+        <Setter Property="BorderBrush" Value="{StaticResource BrushBorder}"/>
+        <Setter Property="BorderThickness" Value="1"/>
+        <Setter Property="Padding" Value="8"/>
+        <Setter Property="CaretBrush" Value="{StaticResource BrushAccent}"/>
+      </Style>
+
+      <Style x:Key="ConsoleTextBox" TargetType="TextBox" BasedOn="{StaticResource {x:Type TextBox}}">
+        <Setter Property="Background" Value="#07111F"/>
+        <Setter Property="Foreground" Value="#D1E7FF"/>
+        <Setter Property="BorderBrush" Value="#27415F"/>
+        <Setter Property="FontFamily" Value="Consolas"/>
+        <Setter Property="FontSize" Value="12"/>
+        <Setter Property="Padding" Value="10"/>
+      </Style>
+
+      <Style TargetType="DataGrid">
+        <Setter Property="Background" Value="#0F172A"/>
+        <Setter Property="Foreground" Value="{StaticResource BrushText}"/>
+        <Setter Property="BorderBrush" Value="{StaticResource BrushBorder}"/>
+        <Setter Property="BorderThickness" Value="1"/>
+        <Setter Property="RowBackground" Value="#111827"/>
+        <Setter Property="AlternatingRowBackground" Value="#162033"/>
+        <Setter Property="GridLinesVisibility" Value="Horizontal"/>
+        <Setter Property="HorizontalGridLinesBrush" Value="{StaticResource BrushBorder}"/>
+        <Setter Property="VerticalGridLinesBrush" Value="{StaticResource BrushBorder}"/>
+      </Style>
+
+      <Style TargetType="DataGridColumnHeader">
+        <Setter Property="Background" Value="#1E293B"/>
+        <Setter Property="Foreground" Value="{StaticResource BrushText}"/>
+        <Setter Property="BorderBrush" Value="{StaticResource BrushBorder}"/>
+        <Setter Property="FontWeight" Value="SemiBold"/>
+        <Setter Property="Padding" Value="10,8"/>
+      </Style>
+
+      <Style TargetType="DataGridCell">
+        <Setter Property="BorderBrush" Value="{StaticResource BrushBorder}"/>
+        <Setter Property="Padding" Value="8,5"/>
+      </Style>
+
+      <Style TargetType="ProgressBar">
+        <Setter Property="Height" Value="8"/>
+        <Setter Property="Background" Value="#1E293B"/>
+        <Setter Property="Foreground" Value="{StaticResource BrushAccent}"/>
+      </Style>
+
+      <Style TargetType="ScrollBar">
+        <Setter Property="Background" Value="#0F172A"/>
+        <Setter Property="Width" Value="8"/>
+        <Setter Property="MinWidth" Value="8"/>
+        <Setter Property="Template">
+          <Setter.Value>
+            <ControlTemplate TargetType="ScrollBar">
+              <Grid Background="#0B1020" Width="8">
+                <Track x:Name="PART_Track" IsDirectionReversed="True">
+                  <Track.DecreaseRepeatButton>
+                    <RepeatButton Command="ScrollBar.PageUpCommand" Opacity="0" IsTabStop="False"/>
+                  </Track.DecreaseRepeatButton>
+                  <Track.Thumb>
+                    <Thumb>
+                      <Thumb.Template>
+                        <ControlTemplate TargetType="Thumb">
+                          <Border Background="#334155" CornerRadius="4" Margin="2,0"/>
+                        </ControlTemplate>
+                      </Thumb.Template>
+                    </Thumb>
+                  </Track.Thumb>
+                  <Track.IncreaseRepeatButton>
+                    <RepeatButton Command="ScrollBar.PageDownCommand" Opacity="0" IsTabStop="False"/>
+                  </Track.IncreaseRepeatButton>
+                </Track>
+              </Grid>
+            </ControlTemplate>
+          </Setter.Value>
+        </Setter>
+      </Style>
+
+      <Style x:Key="NavItem" TargetType="Border">
+        <Setter Property="CornerRadius" Value="10"/>
+        <Setter Property="Padding" Value="12,9"/>
+        <Setter Property="Margin" Value="0,3"/>
+        <Setter Property="MinHeight" Value="40"/>
+        <Setter Property="Background" Value="Transparent"/>
+      </Style>
+
+      <Style x:Key="NavItemSelected" TargetType="Border" BasedOn="{StaticResource NavItem}">
+        <Setter Property="Background" Value="#183352"/>
+        <Setter Property="BorderBrush" Value="{StaticResource BrushAccent}"/>
+        <Setter Property="BorderThickness" Value="1"/>
+      </Style>
+    </ResourceDictionary>
+  </Window.Resources>
+
+  <Grid Background="{StaticResource BrushBg}">
+    <Grid.ColumnDefinitions>
+      <ColumnDefinition Width="230"/>
+      <ColumnDefinition Width="*"/>
+      <ColumnDefinition Width="300"/>
+    </Grid.ColumnDefinitions>
+
+    <Border Grid.Column="0" Background="#0F172A" BorderBrush="{StaticResource BrushBorder}" BorderThickness="0,0,1,0" Padding="18">
+      <Grid>
+        <Grid.RowDefinitions>
+          <RowDefinition Height="Auto"/>
+          <RowDefinition Height="*"/>
+          <RowDefinition Height="Auto"/>
+        </Grid.RowDefinitions>
+
+        <StackPanel>
+          <Border Width="62" Height="62" CornerRadius="14" Background="#123047" BorderBrush="{StaticResource BrushAccent}" BorderThickness="1" HorizontalAlignment="Left" Margin="0,0,0,14">
+            <Grid>
+              <TextBlock Text="SC" FontSize="20" FontWeight="Bold" Foreground="{StaticResource BrushAccent}" HorizontalAlignment="Center" VerticalAlignment="Center"/>
+            </Grid>
+          </Border>
+          <TextBlock Text="Secure Client" FontSize="20" FontWeight="SemiBold"/>
+          <TextBlock Text="Cleanup Utility" Style="{StaticResource MutedText}" Margin="0,2,0,20"/>
+
+          <Border Style="{StaticResource SoftCard}" Margin="0,0,0,18">
+            <StackPanel>
+              <TextBlock Text="Safety-first cleanup" FontWeight="SemiBold"/>
+              <TextBlock Text="Dry Run is the default path. Broad Cisco roots stay blocked." Style="{StaticResource MutedText}" Margin="0,6,0,0"/>
+            </StackPanel>
+          </Border>
+        </StackPanel>
+
+        <StackPanel Grid.Row="1" Margin="0,6,0,0">
+          <Border Style="{StaticResource NavItemSelected}"><TextBlock Text="Overview" FontWeight="SemiBold" Foreground="{StaticResource BrushAccent}"/></Border>
+          <Border Style="{StaticResource NavItem}"><TextBlock Text="Cleanup"/></Border>
+          <Border Style="{StaticResource NavItem}"><TextBlock Text="Diagnostics"/></Border>
+          <Border Style="{StaticResource NavItem}"><TextBlock Text="Reports"/></Border>
+          <Border Style="{StaticResource NavItem}"><TextBlock Text="Settings"/></Border>
+        </StackPanel>
+
+        <StackPanel Grid.Row="2">
+          <Border CornerRadius="10" Background="#12351F" BorderBrush="#2B7A44" BorderThickness="1" Padding="10" Margin="0,0,0,10">
+            <StackPanel>
+              <TextBlock Text="System healthy" Foreground="{StaticResource BrushSuccess}" FontWeight="SemiBold"/>
+              <TextBlock Text="Safe defaults active" Style="{StaticResource MutedText}" Margin="0,3,0,0"/>
+            </StackPanel>
+          </Border>
+          <TextBlock Text="Version" Style="{StaticResource MutedText}"/>
+          <TextBlock Text="Build: local PowerShell 5.1" Style="{StaticResource MutedText}" Margin="0,4,0,0"/>
+        </StackPanel>
+      </Grid>
     </Border>
 
-    <TabControl Grid.Row="1">
-      <TabItem Header="Сканирование">
-        <Grid Margin="6">
-          <Grid.RowDefinitions>
-            <RowDefinition Height="Auto"/>
-            <RowDefinition Height="*"/>
-            <RowDefinition Height="Auto"/>
-          </Grid.RowDefinitions>
+    <Grid Grid.Column="1" Margin="20,18,18,18">
+      <Grid.RowDefinitions>
+        <RowDefinition Height="Auto"/>
+        <RowDefinition Height="*"/>
+        <RowDefinition Height="Auto"/>
+      </Grid.RowDefinitions>
 
-          <StackPanel Orientation="Horizontal" Margin="0,0,0,8">
-            <Button x:Name="btnScan" Content="Сканировать" Width="160" Height="34" Margin="0,0,12,0"/>
-            <CheckBox x:Name="cbOnlyFound" Content="Показывать только найденные" Margin="0,0,12,0"/>
-            <Button x:Name="btnExportCsv" Content="Экспорт CSV" Width="120" Height="34" Margin="0,0,8,0"/>
-            <Button x:Name="btnExportJson" Content="Экспорт JSON" Width="120" Height="34" Margin="0,0,8,0"/>
-            <Button x:Name="btnExportHtml" Content="Экспорт HTML" Width="120" Height="34" Margin="0,0,8,0"/>
-            <Button x:Name="btnPing" Content="Ping vpn.1cbit.ru" Width="150" Height="34" Margin="0,0,8,0"/>
-            <TextBlock x:Name="lblSummary" Text="Ничего не сканировано" VerticalAlignment="Center" Margin="12,0,0,0"/>
-          </StackPanel>
+      <Grid Grid.Row="0" Margin="0,0,0,12">
+        <Grid.ColumnDefinitions>
+          <ColumnDefinition Width="*" MinWidth="430"/>
+          <ColumnDefinition Width="Auto"/>
+        </Grid.ColumnDefinitions>
+        <StackPanel Grid.Column="0" Margin="0,0,24,0">
+          <TextBlock Text="Secure Client Cleanup Utility" Style="{StaticResource TitleText}" TextWrapping="NoWrap"/>
+          <TextBlock Text="Modern safety dashboard for Cisco AnyConnect / Secure Client reinstall preparation" Style="{StaticResource MutedText}" Margin="0,4,0,0" TextTrimming="CharacterEllipsis" TextWrapping="NoWrap"/>
+        </StackPanel>
+        <StackPanel Grid.Column="1" Orientation="Horizontal" VerticalAlignment="Center">
+          <Button x:Name="btnAnalyze" Content="Dry Run / WhatIf" Style="{StaticResource AccentButton}" Width="142" Height="38" Margin="0,0,8,0"/>
+          <Button x:Name="btnRun" Content="Cleanup" Style="{StaticResource DangerButton}" Width="96" Height="38" Margin="0,0,8,0"/>
+          <Button x:Name="btnClose" Content="Close" Width="76" Height="38"/>
+        </StackPanel>
+      </Grid>
 
-          <DataGrid x:Name="dgScan" Grid.Row="1" AutoGenerateColumns="False" CanUserAddRows="False" HeadersVisibility="Column"
-                    Background="#FFFFFF" Foreground="#111111" GridLinesVisibility="All"
-                    BorderBrush="#D0D7E2" BorderThickness="1" RowBackground="#FFFFFF" AlternatingRowBackground="#F8FAFC"
-                    SelectionMode="Extended" SelectionUnit="FullRow">
-            <DataGrid.Resources>
-              <Style TargetType="DataGridColumnHeader">
-                <Setter Property="FontWeight" Value="SemiBold"/>
-                <Setter Property="Background" Value="#EEF2F7"/>
-                <Setter Property="Foreground" Value="#111111"/>
-                <Setter Property="BorderBrush" Value="#D0D7E2"/>
-              </Style>
-            </DataGrid.Resources>
-            <DataGrid.Columns>
-              <DataGridCheckBoxColumn Header="✔" Binding="{Binding Selected}" Width="40"/>
-              <DataGridTextColumn Header="Категория"  Binding="{Binding Category}" Width="160"/>
-              <DataGridTextColumn Header="Имя"        Binding="{Binding Name}" Width="*"/>
-              <DataGridTextColumn Header="Состояние"  Binding="{Binding State}" Width="200"/>
-              <DataGridTextColumn Header="Детали"     Binding="{Binding Details}" Width="280"/>
-            </DataGrid.Columns>
-          </DataGrid>
+      <ScrollViewer Grid.Row="1" VerticalScrollBarVisibility="Auto" Padding="0,0,6,0" Background="Transparent">
+        <StackPanel>
+          <Grid Margin="0,0,0,12">
+            <Grid.ColumnDefinitions>
+              <ColumnDefinition Width="*"/>
+              <ColumnDefinition Width="*"/>
+              <ColumnDefinition Width="*"/>
+            </Grid.ColumnDefinitions>
+            <Border Style="{StaticResource Card}" Margin="0,0,10,0">
+              <StackPanel>
+                <TextBlock Text="Device Ready" Style="{StaticResource SectionTitle}"/>
+                <TextBlock Text="Admin + STA bootstrap active" Style="{StaticResource MutedText}"/>
+                <TextBlock Text="Ready" Foreground="{StaticResource BrushSuccess}" FontSize="20" FontWeight="SemiBold" Margin="0,6,0,0"/>
+              </StackPanel>
+            </Border>
+            <Border Grid.Column="1" Style="{StaticResource Card}" Margin="0,0,10,0">
+              <StackPanel>
+                <TextBlock Text="Safety State" Style="{StaticResource SectionTitle}"/>
+                <TextBlock Text="Broad Cisco roots are blocked" Style="{StaticResource MutedText}"/>
+                <TextBlock Text="Protected" Foreground="{StaticResource BrushAccent}" FontSize="20" FontWeight="SemiBold" Margin="0,6,0,0"/>
+              </StackPanel>
+            </Border>
+            <Border Grid.Column="2" Style="{StaticResource Card}">
+              <StackPanel>
+                <TextBlock Text="Last Scan" Style="{StaticResource SectionTitle}"/>
+                <TextBlock x:Name="lblSummary" Text="Nothing scanned yet" Style="{StaticResource MutedText}"/>
+                <ProgressBar x:Name="pb" Minimum="0" Maximum="100" Margin="0,12,0,0"/>
+              </StackPanel>
+            </Border>
+          </Grid>
 
-          <ProgressBar x:Name="pb" Grid.Row="2" Height="10" Margin="0,8,0,0" Minimum="0" Maximum="100"/>
-        </Grid>
-      </TabItem>
+          <Border Style="{StaticResource Card}">
+            <StackPanel>
+              <TextBlock Text="Safe Workflow" Style="{StaticResource SectionTitle}"/>
+              <UniformGrid Columns="6" Rows="1">
+                <Border Style="{StaticResource SoftCard}" Margin="0,0,8,0"><StackPanel><TextBlock Text="01" Style="{StaticResource MutedText}"/><TextBlock Text="Scan" FontWeight="SemiBold"/></StackPanel></Border>
+                <Border Style="{StaticResource SoftCard}" Margin="0,0,8,0"><StackPanel><TextBlock Text="02" Style="{StaticResource MutedText}"/><TextBlock Text="Dry Run" FontWeight="SemiBold"/></StackPanel></Border>
+                <Border Style="{StaticResource SoftCard}" Margin="0,0,8,0"><StackPanel><TextBlock Text="03" Style="{StaticResource MutedText}"/><TextBlock Text="Backup" FontWeight="SemiBold"/></StackPanel></Border>
+                <Border Style="{StaticResource SoftCard}" Margin="0,0,8,0"><StackPanel><TextBlock Text="04" Style="{StaticResource MutedText}"/><TextBlock Text="Cleanup" FontWeight="SemiBold"/></StackPanel></Border>
+                <Border Style="{StaticResource SoftCard}" Margin="0,0,8,0"><StackPanel><TextBlock Text="05" Style="{StaticResource MutedText}"/><TextBlock Text="Reboot" FontWeight="SemiBold"/></StackPanel></Border>
+                <Border Style="{StaticResource SoftCard}"><StackPanel><TextBlock Text="06" Style="{StaticResource MutedText}"/><TextBlock Text="Reinstall" FontWeight="SemiBold"/></StackPanel></Border>
+              </UniformGrid>
+            </StackPanel>
+          </Border>
 
-      <TabItem Header="Запуск">
-        <Grid Margin="6">
-          <Grid.ColumnDefinitions>
-            <ColumnDefinition Width="2.2*"/>
-            <ColumnDefinition Width="1.2*"/>
-          </Grid.ColumnDefinitions>
+          <Grid>
+            <Grid.ColumnDefinitions>
+              <ColumnDefinition Width="1.2*"/>
+              <ColumnDefinition Width="1*"/>
+            </Grid.ColumnDefinitions>
 
-          <StackPanel Grid.Column="0">
-            <UniformGrid Columns="1" Rows="4" Margin="0,0,0,8">
-              <GroupBox Header="Режимы" Background="#FFFFFF" BorderBrush="#D0D7E2" BorderThickness="1" Margin="0,0,0,8">
-                <StackPanel Margin="10">
-                  <CheckBox x:Name="cbFull" Content="Полная очистка" IsChecked="False" Margin="0,4"/>
-                  <CheckBox x:Name="cbServices" Content="Только службы/процессы" Margin="0,4"/>
-                  <CheckBox x:Name="cbFolders" Content="Только папки (включая AppData)" Margin="0,4"/>
-                  <CheckBox x:Name="cbRegistry" Content="Только реестр" Margin="0,4"/>
-                </StackPanel>
-              </GroupBox>
+            <Border Style="{StaticResource Card}" Margin="0,0,12,12">
+              <StackPanel>
+                <TextBlock Text="Safety Controls" Style="{StaticResource SectionTitle}"/>
+                <Grid>
+                  <Grid.ColumnDefinitions>
+                    <ColumnDefinition Width="1*"/>
+                    <ColumnDefinition Width="1.25*"/>
+                  </Grid.ColumnDefinitions>
+                  <StackPanel>
+                    <CheckBox x:Name="cbWhatIf" Content="WhatIf / Dry Run" IsChecked="True"/>
+                    <CheckBox x:Name="cbFull" Content="Full cleanup" IsChecked="False"/>
+                    <CheckBox x:Name="cbServices" Content="Services / processes"/>
+                    <CheckBox x:Name="cbFolders" Content="Folders and AppData"/>
+                    <CheckBox x:Name="cbRegistry" Content="Registry"/>
+                  </StackPanel>
+                  <StackPanel Grid.Column="1" Margin="18,0,0,0">
+                    <RadioButton x:Name="rbCurrent" Content="Current user only" IsChecked="True"/>
+                    <RadioButton x:Name="rbAll" Content="All user profiles"/>
+                    <CheckBox x:Name="cbBackup" Content="Backup registry / folders"/>
+                    <CheckBox x:Name="cbHtml" Content="HTML report" IsChecked="True"/>
+                    <CheckBox x:Name="cbForce" Content="Force retry"/>
+                    <CheckBox x:Name="cbRestorePoint" Content="Create restore point" IsChecked="False"/>
+                    <CheckBox x:Name="cbSelectionOnly" Content="Selected rows only"/>
+                    <CheckBox x:Name="cbOnlyFound" Content="Show only found"/>
+                  </StackPanel>
+                </Grid>
+              </StackPanel>
+            </Border>
 
-              <GroupBox Header="Область пользователей (AppData)" Background="#FFFFFF" BorderBrush="#D0D7E2" BorderThickness="1" Margin="0,0,0,8">
-                <StackPanel Margin="10">
-                  <RadioButton x:Name="rbCurrent" Content="Только текущий пользователь" IsChecked="True" Margin="0,4"/>
-                  <RadioButton x:Name="rbAll" Content="Все профили пользователей (требует осознанного выбора)" IsChecked="False" Margin="0,4"/>
-                </StackPanel>
-              </GroupBox>
+            <Border Grid.Column="1" Style="{StaticResource Card}">
+              <StackPanel>
+                <TextBlock Text="Diagnostics Quick Actions" Style="{StaticResource SectionTitle}"/>
+                <Button x:Name="btnDiag" Content="Run Diagnostics" Margin="0,0,0,8"/>
+                <Button x:Name="btnDisableAdapters" Content="Disable suspicious adapters" Margin="0,0,0,8"/>
+                <Button x:Name="btnStopGoodbye" Content="Stop GoodbyeDPI / WinDivert" Margin="0,0,0,8"/>
+                <Button x:Name="btnPing" Content="Ping vpn.1cbit.ru"/>
+              </StackPanel>
+            </Border>
+          </Grid>
 
-              <GroupBox Header="Опции" Background="#FFFFFF" BorderBrush="#D0D7E2" BorderThickness="1" Margin="0,0,0,8">
-                <StackPanel Margin="10">
-                  <CheckBox x:Name="cbBackup" Content="Резервные копии (реестр и папки)" Margin="0,4"/>
-                  <CheckBox x:Name="cbHtml"   Content="HTML-отчёт" Margin="0,4" IsChecked="True"/>
-                  <CheckBox x:Name="cbForce"  Content="Force (повторные попытки удаления)" Margin="0,4"/>
-                  <CheckBox x:Name="cbWhatIf" Content="WhatIf (анализ без изменений)" Margin="0,4" IsChecked="True"/>
-                </StackPanel>
-              </GroupBox>
+          <Border Style="{StaticResource Card}">
+            <StackPanel>
+              <TextBlock Text="Detected Components" Style="{StaticResource SectionTitle}"/>
+              <UniformGrid Columns="6" Rows="1">
+                <Border Style="{StaticResource SoftCard}" Height="76" Padding="8" Margin="0,0,8,0"><StackPanel><TextBlock Text="Services" Style="{StaticResource MutedText}"/><TextBlock Text="3" FontSize="19" FontWeight="SemiBold"/><TextBlock Text="targets" Style="{StaticResource MutedText}"/></StackPanel></Border>
+                <Border Style="{StaticResource SoftCard}" Height="76" Padding="8" Margin="0,0,8,0"><StackPanel><TextBlock Text="Folders" Style="{StaticResource MutedText}"/><TextBlock Text="Scoped" FontSize="15" FontWeight="SemiBold"/><TextBlock Text="known paths" Style="{StaticResource MutedText}"/></StackPanel></Border>
+                <Border Style="{StaticResource SoftCard}" Height="76" Padding="8" Margin="0,0,8,0"><StackPanel><TextBlock Text="Registry" Style="{StaticResource MutedText}"/><TextBlock Text="Service" FontSize="15" FontWeight="SemiBold"/><TextBlock Text="keys only" Style="{StaticResource MutedText}"/></StackPanel></Border>
+                <Border Style="{StaticResource SoftCard}" Height="76" Padding="8" Margin="0,0,8,0"><StackPanel><TextBlock Text="AppData" Style="{StaticResource MutedText}"/><TextBlock Text="User" FontSize="15" FontWeight="SemiBold"/><TextBlock Text="scoped" Style="{StaticResource MutedText}"/></StackPanel></Border>
+                <Border Style="{StaticResource SoftCard}" Height="76" Padding="8" Margin="0,0,8,0"><StackPanel><TextBlock Text="Diagnostics" Style="{StaticResource MutedText}"/><TextBlock Text="Ready" FontSize="15" FontWeight="SemiBold"/><TextBlock Text="network" Style="{StaticResource MutedText}"/></StackPanel></Border>
+                <Border Height="76" Background="#123047" BorderBrush="{StaticResource BrushAccent}" BorderThickness="1" CornerRadius="12" Padding="8"><StackPanel><TextBlock Text="Total" Style="{StaticResource MutedText}"/><TextBlock Text="Scan" FontSize="19" FontWeight="SemiBold" Foreground="{StaticResource BrushAccent}"/><TextBlock Text="first" Style="{StaticResource MutedText}"/></StackPanel></Border>
+              </UniformGrid>
+            </StackPanel>
+          </Border>
 
-              <GroupBox Header="Защита" Background="#FFFFFF" BorderBrush="#D0D7E2" BorderThickness="1">
-                <StackPanel Margin="10">
-                  <CheckBox x:Name="cbRestorePoint" Content="Создать точку восстановления" Margin="0,4" IsChecked="False"/>
-                  <CheckBox x:Name="cbSelectionOnly" Content="Действовать только по выбранным строкам (✔)" Margin="0,4"/>
-                </StackPanel>
-              </GroupBox>
-            </UniformGrid>
-          </StackPanel>
-
-          <GroupBox Grid.Column="1" Header="Пути и лог" Background="#FFFFFF" BorderBrush="#D0D7E2" BorderThickness="1">
-            <Grid Margin="10">
+          <Border Style="{StaticResource Card}">
+            <Grid>
               <Grid.RowDefinitions>
                 <RowDefinition Height="Auto"/>
-                <RowDefinition Height="Auto"/>
-                <RowDefinition Height="*"/>
+                <RowDefinition Height="260"/>
               </Grid.RowDefinitions>
               <Grid.ColumnDefinitions>
-                <ColumnDefinition Width="Auto"/>
                 <ColumnDefinition Width="*"/>
                 <ColumnDefinition Width="Auto"/>
               </Grid.ColumnDefinitions>
+              <TextBlock Text="Scan Results" Style="{StaticResource SectionTitle}"/>
+              <StackPanel Grid.Column="1" Orientation="Horizontal" Margin="0,0,0,10">
+                <Button x:Name="btnScan" Content="Scan" Style="{StaticResource AccentButton}" Width="90" Margin="0,0,8,0"/>
+                <Button x:Name="btnExportCsv" Content="CSV" Width="70" Margin="0,0,8,0"/>
+                <Button x:Name="btnExportJson" Content="JSON" Width="70" Margin="0,0,8,0"/>
+                <Button x:Name="btnExportHtml" Content="HTML" Width="70"/>
+              </StackPanel>
 
-              <TextBlock Text="Log:" Grid.Row="0" Grid.Column="0" Margin="0,6,8,6" VerticalAlignment="Center"/>
-              <TextBox x:Name="tbLogPath" Grid.Row="0" Grid.Column="1" Margin="0,6" Text="%ProgramData%\CiscoCleanup\cleanup.log"/>
-              <Button x:Name="btnOpenLog" Content="Открыть" Grid.Row="0" Grid.Column="2" Margin="8,6,0,6" Width="90"/>
-
-              <TextBlock Text="HTML:" Grid.Row="1" Grid.Column="0" Margin="0,6,8,6" VerticalAlignment="Center"/>
-              <TextBox x:Name="tbHtmlPath" Grid.Row="1" Grid.Column="1" Margin="0,6" Text="%ProgramData%\CiscoCleanup\report.html"/>
-              <Button x:Name="btnOpenHtml" Content="Открыть" Grid.Row="1" Grid.Column="2" Margin="8,6,0,6" Width="90"/>
-
-              <TextBox x:Name="tbConsole" Grid.Row="2" Grid.ColumnSpan="3" Margin="0,10,0,0" AcceptsReturn="True" VerticalScrollBarVisibility="Auto" TextWrapping="Wrap"
-                       Background="#FAFBFC" Foreground="#111111" FontFamily="Consolas" FontSize="12" BorderBrush="#D0D7E2" BorderThickness="1"/>
+              <DataGrid x:Name="dgScan" Grid.Row="1" Grid.ColumnSpan="2" AutoGenerateColumns="False" CanUserAddRows="False"
+                        HeadersVisibility="Column" SelectionMode="Extended" SelectionUnit="FullRow">
+                <DataGrid.Columns>
+                  <DataGridCheckBoxColumn Header="Sel" Binding="{Binding Selected}" Width="48"/>
+                  <DataGridTextColumn Header="Category" Binding="{Binding Category}" Width="140"/>
+                  <DataGridTextColumn Header="Name" Binding="{Binding Name}" Width="*"/>
+                  <DataGridTextColumn Header="State" Binding="{Binding State}" Width="140"/>
+                  <DataGridTextColumn Header="Details" Binding="{Binding Details}" Width="260"/>
+                </DataGrid.Columns>
+              </DataGrid>
             </Grid>
-          </GroupBox>
-        </Grid>
-      </TabItem>
+          </Border>
 
-      <TabItem Header="Диагностика">
-        <Grid Margin="6">
-          <Grid.RowDefinitions>
-            <RowDefinition Height="Auto"/>
-            <RowDefinition Height="*"/>
-          </Grid.RowDefinitions>
-          <StackPanel Orientation="Horizontal" Margin="0,0,0,8">
-            <Button x:Name="btnDiag" Content="Проверить подключения" Width="220" Height="34" Margin="0,0,8,0"/>
-            <Button x:Name="btnDisableAdapters" Content="Отключить подозрительные адаптеры" Width="260" Height="34" Margin="0,0,8,0"/>
-            <Button x:Name="btnStopGoodbye" Content="Остановить GoodbyeDPI / WinDivert" Width="260" Height="34" Margin="0,0,8,0"/>
-            <TextBlock Text="DNS/Ping/TCP:443, прокси, VPN-адаптеры, процессы VPN, GoodbyeDPI/WinDivert, маршруты." VerticalAlignment="Center"/>
-          </StackPanel>
-          <TextBox x:Name="tbDiag" Grid.Row="1" AcceptsReturn="True" VerticalScrollBarVisibility="Auto" TextWrapping="Wrap"
-                   Background="#FAFBFC" Foreground="#111111" FontFamily="Consolas" FontSize="12" BorderBrush="#D0D7E2" BorderThickness="1"/>
-        </Grid>
-      </TabItem>
+          <Grid>
+            <Grid.ColumnDefinitions>
+              <ColumnDefinition Width="*"/>
+              <ColumnDefinition Width="*"/>
+            </Grid.ColumnDefinitions>
+            <Border Style="{StaticResource Card}" Margin="0,0,12,0">
+              <Grid>
+                <Grid.RowDefinitions>
+                  <RowDefinition Height="Auto"/>
+                  <RowDefinition Height="120"/>
+                </Grid.RowDefinitions>
+                <TextBlock Text="Activity Log" Style="{StaticResource SectionTitle}"/>
+                <TextBox x:Name="tbConsole" Grid.Row="1" AcceptsReturn="True" VerticalScrollBarVisibility="Auto" TextWrapping="Wrap"
+                         Style="{StaticResource ConsoleTextBox}" IsReadOnly="True"/>
+              </Grid>
+            </Border>
+            <Border Grid.Column="1" Style="{StaticResource Card}">
+              <Grid>
+                <Grid.RowDefinitions>
+                  <RowDefinition Height="Auto"/>
+                  <RowDefinition Height="120"/>
+                </Grid.RowDefinitions>
+                <TextBlock Text="Diagnostics Output" Style="{StaticResource SectionTitle}"/>
+                <TextBox x:Name="tbDiag" Grid.Row="1" AcceptsReturn="True" VerticalScrollBarVisibility="Auto" TextWrapping="Wrap"
+                         Style="{StaticResource ConsoleTextBox}" IsReadOnly="True"/>
+              </Grid>
+            </Border>
+          </Grid>
+        </StackPanel>
+      </ScrollViewer>
 
-      <TabItem Header="Лог">
-        <Grid Margin="6">
-          <TextBox x:Name="tbLogView" AcceptsReturn="True" VerticalScrollBarVisibility="Auto" TextWrapping="Wrap"
-                   Background="#FAFBFC" Foreground="#111111" FontFamily="Consolas" FontSize="12" BorderBrush="#D0D7E2" BorderThickness="1"/>
-        </Grid>
-      </TabItem>
-    </TabControl>
+      <Border Grid.Row="2" Style="{StaticResource Card}" Margin="0,14,0,0" Padding="12">
+        <TextBox x:Name="tbLogView" Height="54" AcceptsReturn="True" VerticalScrollBarVisibility="Auto" TextWrapping="Wrap"
+                 FontFamily="Consolas" FontSize="12"/>
+      </Border>
+    </Grid>
 
-    <DockPanel Grid.Row="2" LastChildFill="False" Margin="0,12,0,0">
-      <Button x:Name="btnAnalyze" Content="Анализ (WhatIf)" Width="180" Height="36" Margin="0,0,8,0" Background="#EEF2F7" Foreground="#111111"/>
-      <Button x:Name="btnRun" Content="Запуск очистки" Width="180" Height="36" Margin="0,0,8,0" Background="#12B886" Foreground="White"/>
-      <Button x:Name="btnClose" Content="Закрыть" Width="120" Height="36" Background="#EEF2F7" Foreground="#111111"/>
-    </DockPanel>
+    <Border Grid.Column="2" Background="{StaticResource BrushPanel}" BorderBrush="{StaticResource BrushBorder}" BorderThickness="1,0,0,0" Padding="16">
+      <ScrollViewer VerticalScrollBarVisibility="Auto" Padding="0,0,4,0">
+        <StackPanel>
+          <TextBlock Text="Summary" FontSize="20" FontWeight="SemiBold" Margin="0,0,0,12"/>
+
+          <Border Style="{StaticResource Card}" Padding="12" Margin="0,0,0,9">
+            <StackPanel>
+              <TextBlock Text="Items Found" Style="{StaticResource MutedText}"/>
+              <TextBlock Text="Run Scan" FontSize="20" FontWeight="SemiBold" Margin="0,3,0,0"/>
+            </StackPanel>
+          </Border>
+
+          <Border Style="{StaticResource Card}" Padding="12" Margin="0,0,0,9">
+            <StackPanel>
+              <TextBlock Text="Blocked Broad Roots" Style="{StaticResource MutedText}"/>
+              <TextBlock Text="Registry + folders protected" Foreground="{StaticResource BrushSuccess}" FontWeight="SemiBold" Margin="0,3,0,0"/>
+            </StackPanel>
+          </Border>
+
+          <Border Style="{StaticResource Card}" Padding="12" Margin="0,0,0,9">
+            <StackPanel>
+              <TextBlock Text="Backup Path" Style="{StaticResource MutedText}"/>
+              <TextBlock Text="Log path" FontWeight="SemiBold" Margin="0,3,0,5"/>
+              <Grid>
+                <Grid.ColumnDefinitions>
+                  <ColumnDefinition Width="*"/>
+                  <ColumnDefinition Width="Auto"/>
+                </Grid.ColumnDefinitions>
+                <TextBox x:Name="tbLogPath" Text="%ProgramData%\CiscoCleanup\cleanup.log" Height="36" VerticalContentAlignment="Center" HorizontalScrollBarVisibility="Hidden" TextWrapping="NoWrap"/>
+                <Button x:Name="btnOpenLog" Grid.Column="1" Content="Open" Width="58" Height="36" Margin="6,0,0,0"/>
+              </Grid>
+            </StackPanel>
+          </Border>
+
+          <Border Style="{StaticResource Card}" Padding="12" Margin="0,0,0,9">
+            <StackPanel>
+              <TextBlock Text="Report Path" Style="{StaticResource MutedText}"/>
+              <TextBlock Text="HTML report" FontWeight="SemiBold" Margin="0,3,0,5"/>
+              <Grid>
+                <Grid.ColumnDefinitions>
+                  <ColumnDefinition Width="*"/>
+                  <ColumnDefinition Width="Auto"/>
+                </Grid.ColumnDefinitions>
+                <TextBox x:Name="tbHtmlPath" Text="%ProgramData%\CiscoCleanup\report.html" Height="36" VerticalContentAlignment="Center" HorizontalScrollBarVisibility="Hidden" TextWrapping="NoWrap"/>
+                <Button x:Name="btnOpenHtml" Grid.Column="1" Content="Open" Width="58" Height="36" Margin="6,0,0,0"/>
+              </Grid>
+            </StackPanel>
+          </Border>
+
+          <Border Style="{StaticResource Card}" Padding="12" Margin="0,0,0,9">
+            <StackPanel>
+              <TextBlock Text="Current Plan" Style="{StaticResource MutedText}"/>
+              <TextBlock Text="1. Scan" Margin="0,6,0,0"/>
+              <TextBlock Text="2. Dry Run / WhatIf" Margin="0,2,0,0"/>
+              <TextBlock Text="3. Backup" Margin="0,2,0,0"/>
+              <TextBlock Text="4. Cleanup" Margin="0,2,0,0"/>
+              <TextBlock Text="5. Reboot" Margin="0,2,0,0"/>
+              <TextBlock Text="6. Reinstall Cisco Secure Client" Margin="0,2,0,0"/>
+            </StackPanel>
+          </Border>
+        </StackPanel>
+      </ScrollViewer>
+    </Border>
   </Grid>
 </Window>
 '@
