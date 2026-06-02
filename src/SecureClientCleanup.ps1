@@ -676,16 +676,65 @@ function Remove-CiscoRegistry([bool]$WhatIf,[bool]$Backup,$Selection){
 }
 
 # ── HTML-отчёт ────────────────────────────────────────────────────────────────
+function ConvertTo-HtmlEncodedText($Value){
+  if ($null -eq $Value) { return "" }
+
+  return ([string]$Value).
+    Replace('&','&amp;').
+    Replace('<','&lt;').
+    Replace('>','&gt;').
+    Replace('"','&quot;').
+    Replace("'","&#39;")
+}
+
 function Save-HtmlReport([Array]$Items,[string]$Path){
-  $rows = $Items | % { "<tr><td>$($_.Category)</td><td>$($_.Name)</td><td>$($_.State)</td><td>$($_.Details)</td></tr>" } | Out-String
+  $reportPath = [System.IO.Path]::GetFullPath($Path)
+  $reportDir = [System.IO.Path]::GetDirectoryName($reportPath)
+  if (-not [string]::IsNullOrWhiteSpace($reportDir)){
+    New-Item -ItemType Directory -Path $reportDir -Force -ErrorAction Stop | Out-Null
+  }
+
+  $itemList = if ($null -eq $Items) { @() } else { @($Items) }
+  if ($itemList.Count -gt 0){
+    $rows = $itemList | % {
+      "<tr><td>{0}</td><td>{1}</td><td>{2}</td><td>{3}</td></tr>" -f `
+        (ConvertTo-HtmlEncodedText $_.Category),
+        (ConvertTo-HtmlEncodedText $_.Name),
+        (ConvertTo-HtmlEncodedText $_.State),
+        (ConvertTo-HtmlEncodedText $_.Details)
+    } | Out-String
+  } else {
+    $rows = "<tr><td colspan=""4"">No scan items</td></tr>"
+  }
+
+  $reportDate = ConvertTo-HtmlEncodedText ((Get-Date).ToString("yyyy-MM-dd HH:mm:ss"))
+  $hostName = ConvertTo-HtmlEncodedText ([Environment]::MachineName)
   $html = @"
-<!DOCTYPE html><html lang='ru'><meta charset='utf-8'><title>Cisco Cleanup Report</title>
-<style>body{font-family:Segoe UI,Arial,sans-serif;background:#fff;color:#111;margin:20px}th,td{border:1px solid #D0D7E2;padding:8px}th{background:#EEF2F7}</style>
-<h2>Отчёт сканирования</h2><p>Дата: $(Get-Date) • Хост: $env:COMPUTERNAME</p>
-<table cellspacing=0 cellpadding=0><thead><tr><th>Категория</th><th>Объект</th><th>Состояние</th><th>Детали</th></tr></thead><tbody>$rows</tbody></table>
+<!DOCTYPE html>
+<html lang="ru">
+<head>
+<meta charset="utf-8">
+<title>Secure Client Cleanup Report</title>
+<style>
+body{font-family:Segoe UI,Arial,sans-serif;background:#fff;color:#111;margin:20px}
+table{border-collapse:collapse;width:100%}
+th,td{border:1px solid #D0D7E2;padding:8px;text-align:left;vertical-align:top}
+th{background:#EEF2F7}
+</style>
+</head>
+<body>
+<h2>Отчёт сканирования</h2>
+<p>Дата: $reportDate &bull; Хост: $hostName</p>
+<table>
+<thead><tr><th>Категория</th><th>Объект</th><th>Состояние</th><th>Детали</th></tr></thead>
+<tbody>
+$rows
+</tbody>
+</table>
+</body>
 </html>
 "@
-  Set-Content -Path $Path -Value $html -Encoding UTF8
+  Set-Content -Path $reportPath -Value $html -Encoding UTF8
 }
 
 # ── Диагностика/действия ──────────────────────────────────────────────────────
