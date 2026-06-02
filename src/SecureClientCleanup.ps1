@@ -986,6 +986,47 @@ function Remove-CiscoServices([bool]$WhatIf,$Selection){
     }
   }
 }
+
+function Backup-FolderSafe([string]$SourcePath,[string]$OutputZipPath){
+  try{
+    if (-not (Test-Path $SourcePath)){
+      Write-UILog ("Backup folder skipped, source not found: {0}" -f $SourcePath) "WARN"
+      return $false
+    }
+
+    $zipDir = [System.IO.Path]::GetDirectoryName($OutputZipPath)
+    if (-not [string]::IsNullOrWhiteSpace($zipDir)){
+      New-Item -ItemType Directory -Path $zipDir -Force -ErrorAction Stop | Out-Null
+    }
+
+    Add-Type -AssemblyName 'System.IO.Compression.FileSystem' -ErrorAction Stop
+
+    $targetZip = $OutputZipPath
+    if (Test-Path $targetZip){
+      $baseName = [System.IO.Path]::GetFileNameWithoutExtension($OutputZipPath)
+      $extension = [System.IO.Path]::GetExtension($OutputZipPath)
+      $parent = [System.IO.Path]::GetDirectoryName($OutputZipPath)
+      $i = 1
+      do {
+        $targetZip = Join-Path $parent ("{0}_{1}{2}" -f $baseName,$i,$extension)
+        $i++
+      } while (Test-Path $targetZip)
+    }
+
+    [System.IO.Compression.ZipFile]::CreateFromDirectory($SourcePath,$targetZip)
+    if (-not (Test-Path $targetZip)){
+      Write-UILog ("Backup folder failed for {0}: zip was not created: {1}" -f $SourcePath,$targetZip) "ERROR"
+      return $false
+    }
+
+    Write-UILog ("Backup {0} -> {1}" -f $SourcePath,$targetZip)
+    return $true
+  } catch {
+    Write-UILog ("Backup folder failed for {0}: {1}" -f $SourcePath, $_.Exception.Message) "ERROR"
+    return $false
+  }
+}
+
 function Remove-CiscoFolders([bool]$WhatIf,[bool]$Backup,[bool]$Force,$Selection){
   $targets = if ($Selection){ $Selection | ? {$_.Category -eq "Folder"} | % { $_.Name } } else { Get-TargetFolders }
   foreach($path in $targets){
@@ -996,12 +1037,15 @@ function Remove-CiscoFolders([bool]$WhatIf,[bool]$Backup,[bool]$Force,$Selection
     if (Test-Path $path){
       if ($WhatIf){ Write-UILog ("WHATIF: remove dir {0}" -f $path) }
       else{
-        try{
-          if ($Backup){
-            Add-Type -AssemblyName 'System.IO.Compression.FileSystem' -ErrorAction SilentlyContinue
-            $zip = Join-Path $global:CleanupRoot ("{0}_{1:yyyyMMdd_HHmmss}.zip" -f ((Split-Path $path -Leaf) -replace '[^\w\-\.]','_'), (Get-Date))
-            [System.IO.Compression.ZipFile]::CreateFromDirectory($path,$zip); Write-UILog ("Backup {0} -> {1}" -f $path,$zip)
+        if ($Backup){
+          $zip = Join-Path $global:CleanupRoot ("{0}_{1:yyyyMMdd_HHmmss}.zip" -f ((Split-Path $path -Leaf) -replace '[^\w\-\.]','_'), (Get-Date))
+          if (-not (Backup-FolderSafe -SourcePath $path -OutputZipPath $zip)){
+            Write-UILog ("Skip remove dir {0}: backup failed" -f $path) "ERROR"
+            continue
           }
+        }
+
+        try{
           Remove-Item -Path $path -Recurse -Force -ErrorAction Stop
           Write-UILog ("Removed dir {0}" -f $path)
         } catch {
