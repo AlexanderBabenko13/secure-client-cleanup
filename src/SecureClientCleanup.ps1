@@ -1294,20 +1294,88 @@ function Test-VpnDiagnostics([string]$TargetHost = "vpn.1cbit.ru"){
 }
 
 function Disable-SuspiciousAdapters {
-  $ifaces = Get-NetAdapter -Physical:$false -ErrorAction SilentlyContinue
-  $targets = @()
-  foreach($i in $ifaces){
-    foreach($p in $AdapterPatterns){
-      if ($i.Name -like "*$p*" -or $i.InterfaceDescription -like "*$p*"){ $targets += $i; break }
-    }
+  Write-Diag "=== Adapter candidates: show-only safety mode ==="
+  Write-Diag "No adapters will be disabled automatically. Review candidates manually before making network changes."
+
+  $items = @(Get-AdapterCandidates)
+  if (-not $items.Count){
+    Write-Diag "SKIPPED: adapters were not found or Get-NetAdapter is unavailable."
+    return
   }
-  if (-not $targets.Count){ Write-Diag "Подозрительных адаптеров не найдено."; return }
-  $msg = "Будут отключены адаптеры:`n" + ($targets | % { "• " + $_.Name } | Out-String)
-  $r=[System.Windows.MessageBox]::Show($msg,"Отключить адаптеры?","YesNo","Warning")
-  if($r -ne "Yes"){ return }
-  foreach($n in $targets){
-    try { Disable-NetAdapter -Name $n.Name -Confirm:$false -ErrorAction Stop; Write-Diag ("Отключен адаптер: {0}" -f $n.Name) }
-    catch { Write-Diag ("Не удалось отключить {0}: {1}" -f $n.Name, $_.Exception.Message) }
+
+  $visible = @($items | ? { $_.RiskLevel -ne "Skipped" -or $_.Reason -ne "No VPN/TUN/TAP/Wintun/WireGuard pattern matched" })
+  foreach($item in $visible){
+    Write-Diag ("{0}: {1} | Status={2}; LinkSpeed={3}; MAC={4}; Reason={5}" -f $item.RiskLevel.ToUpperInvariant(),$item.Name,$item.Status,$item.LinkSpeed,$item.MacAddress,$item.Reason)
+  }
+
+  $candidateCount = @($items | ? { $_.RiskLevel -eq "Candidate" }).Count
+  $protectedCount = @($items | ? { $_.IsProtected }).Count
+  $skippedCount = @($items | ? { $_.RiskLevel -eq "Skipped" }).Count
+  Write-Diag ("Adapter summary: CANDIDATE={0}; PROTECTED={1}; SKIPPED={2}" -f $candidateCount,$protectedCount,$skippedCount)
+  Write-Diag "SKIPPED: Disable-NetAdapter is not called by this button. Disable only explicitly selected safe candidates outside this tool after verification."
+}
+
+function Get-AdapterCandidates {
+  $candidatePatterns = @("TAP","TUN","Wintun","WireGuard","NordLynx","Juniper","Fortinet","Checkpoint","PANGP","Zscaler","SSTap")
+  $protectedPatterns = @("Hyper-V","Npcap Loopback")
+
+  try{
+    $adapters = @(Get-NetAdapter -ErrorAction Stop)
+  } catch {
+    Write-Diag ("SKIPPED: Get-NetAdapter failed: {0}" -f $_.Exception.Message)
+    return @()
+  }
+
+  $defaultRouteIfIndexes = @()
+  try{
+    $defaultRouteIfIndexes = @(Get-NetRoute -DestinationPrefix "0.0.0.0/0" -ErrorAction SilentlyContinue | % { $_.IfIndex } | Sort-Object -Unique)
+  } catch {}
+
+  $physicalNames = @()
+  try{
+    $physicalNames = @(Get-NetAdapter -Physical -ErrorAction SilentlyContinue | % { $_.Name })
+  } catch {}
+
+  foreach($adapter in $adapters){
+    $text = ("{0} {1}" -f $adapter.Name,$adapter.InterfaceDescription)
+    $matchedCandidate = @($candidatePatterns | ? { $text -like "*$_*" })
+    $matchedProtected = @($protectedPatterns | ? { $text -like "*$_*" })
+    $hasDefaultRoute = $false
+    if ($adapter.InterfaceIndex -and ($defaultRouteIfIndexes -contains $adapter.InterfaceIndex)){ $hasDefaultRoute = $true }
+
+    $isPhysical = $false
+    if ($physicalNames -contains $adapter.Name){ $isPhysical = $true }
+    if ($adapter.PSObject.Properties.Name -contains "HardwareInterface" -and $adapter.HardwareInterface){ $isPhysical = $true }
+    if ($adapter.InterfaceDescription -match "(?i)ethernet|wi-?fi|wireless|802\.11|realtek|intel|broadcom|qualcomm"){ $isPhysical = $true }
+
+    $protectedReasons = @()
+    if ($matchedProtected.Count){ $protectedReasons += ("protected adapter type: {0}" -f ($matchedProtected -join ", ")) }
+    if ($adapter.Status -eq "Up"){ $protectedReasons += "status is Up" }
+    if ($hasDefaultRoute){ $protectedReasons += "has default route" }
+    if ($isPhysical){ $protectedReasons += "physical Ethernet/Wi-Fi adapter" }
+
+    $isProtected = ($protectedReasons.Count -gt 0)
+    $riskLevel = "Skipped"
+    $reason = "No VPN/TUN/TAP/Wintun/WireGuard pattern matched"
+    if ($isProtected){
+      $riskLevel = "Protected"
+      $reason = ($protectedReasons -join "; ")
+    } elseif ($matchedCandidate.Count){
+      $riskLevel = "Candidate"
+      $reason = ("candidate VPN/TUN/TAP pattern: {0}" -f (($matchedCandidate | Select-Object -Unique) -join ", "))
+    }
+
+    [PSCustomObject]@{
+      Name = $adapter.Name
+      InterfaceDescription = $adapter.InterfaceDescription
+      Status = $adapter.Status
+      MacAddress = $adapter.MacAddress
+      LinkSpeed = $adapter.LinkSpeed
+      RiskLevel = $riskLevel
+      Reason = $reason
+      IsHighRisk = $isProtected
+      IsProtected = $isProtected
+    }
   }
 }
 
