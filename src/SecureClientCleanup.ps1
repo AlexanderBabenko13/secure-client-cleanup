@@ -593,6 +593,59 @@ function Remove-CiscoFolders([bool]$WhatIf,[bool]$Backup,[bool]$Force,$Selection
     }
   }
 }
+
+function ConvertTo-RegExePath([string]$RegistryPath){
+  if ([string]::IsNullOrWhiteSpace($RegistryPath)) { return $null }
+
+  $trimmed = $RegistryPath.Trim()
+  if ($trimmed -match '^(HKLM|HKCU|HKCR|HKU|HKCC):\\(.*)$') {
+    $hive = $matches[1]
+    $subPath = $matches[2]
+    if ([string]::IsNullOrWhiteSpace($subPath)) { return $hive }
+    return ("{0}\{1}" -f $hive, $subPath)
+  }
+
+  return $null
+}
+
+function Export-RegistryKeySafe([string]$RegistryPath,[string]$OutputPath){
+  try{
+    if (-not (Test-Path $RegistryPath)){
+      Write-UILog ("Backup reg skipped, key not found: {0}" -f $RegistryPath) "WARN"
+      return $false
+    }
+
+    $regExePath = ConvertTo-RegExePath $RegistryPath
+    if ([string]::IsNullOrWhiteSpace($regExePath)){
+      Write-UILog ("Backup reg failed, unsupported registry path: {0}" -f $RegistryPath) "ERROR"
+      return $false
+    }
+
+    $dir = [System.IO.Path]::GetDirectoryName($OutputPath)
+    if (-not [string]::IsNullOrWhiteSpace($dir)){
+      New-Item -ItemType Directory -Path $dir -Force -ErrorAction Stop | Out-Null
+    }
+
+    $output = & reg.exe export $regExePath $OutputPath /y 2>&1
+    $exitCode = $LASTEXITCODE
+    if ($exitCode -ne 0){
+      Write-UILog ("Backup reg failed for {0}: reg.exe exit code {1}; {2}" -f $RegistryPath, $exitCode, (($output | Out-String).Trim())) "ERROR"
+      return $false
+    }
+
+    if (-not (Test-Path $OutputPath)){
+      Write-UILog ("Backup reg failed for {0}: output file was not created: {1}" -f $RegistryPath, $OutputPath) "ERROR"
+      return $false
+    }
+
+    Write-UILog ("Backup reg {0} -> {1}" -f $RegistryPath,$OutputPath)
+    return $true
+  } catch {
+    Write-UILog ("Backup reg failed for {0}: {1}" -f $RegistryPath, $_.Exception.Message) "ERROR"
+    return $false
+  }
+}
+
 function Remove-CiscoRegistry([bool]$WhatIf,[bool]$Backup,$Selection){
   $targets = if ($Selection){ $Selection | ? {$_.Category -eq "Registry"} | % { $_.Name } } else { $RegistryKeys }
   foreach($key in $targets){
@@ -607,8 +660,10 @@ function Remove-CiscoRegistry([bool]$WhatIf,[bool]$Backup,$Selection){
           if ($Backup){
             $safe = ($key -replace '[:\\\/\*?\.<>\| ]','_')
             $export = Join-Path $global:CleanupRoot ("reg_{0}_{1:yyyyMMdd_HHmmss}.reg" -f $safe,(Get-Date))
-            & reg.exe export $key $export /y | Out-Null
-            Write-UILog ("Backup reg {0} -> {1}" -f $key,$export)
+            if (-not (Export-RegistryKeySafe -RegistryPath $key -OutputPath $export)){
+              Write-UILog ("Skip remove reg {0}: backup failed" -f $key) "ERROR"
+              continue
+            }
           }
           Remove-Item -Path $key -Recurse -Force -ErrorAction Stop
           Write-UILog ("Removed reg {0}" -f $key)
