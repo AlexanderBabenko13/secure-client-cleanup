@@ -1,6 +1,6 @@
 # Secure Client Cleanup Utility
 
-[Russian version](README.ru.md)
+[Русский язык](README.ru.md)
 
 Secure Client Cleanup Utility is a Windows PowerShell 5.1 WPF tool for support engineers and system administrators who need to safely prepare a Windows workstation for Cisco AnyConnect / Cisco Secure Client reinstall.
 
