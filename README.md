@@ -1,18 +1,20 @@
 # Secure Client Cleanup Utility
 
-Secure Client Cleanup Utility is a Windows PowerShell 5.1 WPF tool for support engineers and system administrators who need to safely prepare a Windows workstation for Cisco AnyConnect / Cisco Secure Client reinstall.
+[Russian version](README.ru.md)
 
-The utility helps find and remove targeted Cisco VPN leftovers such as service keys, known product folders, and user AppData traces. It also provides diagnostics and exportable reports for troubleshooting.
+Secure Client Cleanup Utility is a Windows PowerShell 5.1 WPF tool for support engineers and system administrators who need to safely prepare a Windows workstation for Cisco AnyConnect / Cisco Secure Client reinstall.
 
 ## Purpose
 
-Use this tool when Cisco AnyConnect / Cisco Secure Client is broken, partially removed, or cannot be reinstalled cleanly. The goal is a controlled cleanup workflow before reinstalling Cisco Secure Client, not broad removal of all Cisco software data from the machine.
+Use this tool when Cisco AnyConnect or Cisco Secure Client is broken, partially removed, or cannot be reinstalled cleanly.
+
+The goal is controlled cleanup before reinstall. The utility targets known Cisco AnyConnect and Cisco Secure Client artifacts; it is not intended to broadly remove all Cisco software or data from a workstation.
 
 ## Administrator Warning
 
-Run the utility only from an elevated Windows PowerShell session or as an elevated executable.
+Run the utility only with administrator privileges.
 
-Cleanup actions can stop services, delete targeted folders, and remove targeted registry keys. Scan, diagnostics, and dry-run workflows are intended to help review the impact before making changes.
+Cleanup can stop services and processes, delete targeted folders, and remove targeted registry keys. Always use Scan, diagnostics, and Dry Run / WhatIf before destructive cleanup.
 
 ## Safe Workflow
 
@@ -25,14 +27,15 @@ Cleanup actions can stop services, delete targeted folders, and remove targeted 
 
 ## Features
 
-- Scan Cisco AnyConnect / Cisco Secure Client services, processes, folders, registry keys, and user AppData locations.
-- Run a non-destructive Dry Run / WhatIf cleanup preview.
-- Back up registry keys before removal when backup is enabled.
-- Export scan results to HTML, CSV, and JSON.
-- Generate an HTML report with escaped content.
-- Run VPN-related diagnostics for DNS, ping, TCP 443, proxy settings, routes, adapters, and common conflicting VPN tools.
-- Use safety guards that block broad Cisco registry roots and broad Cisco folders from automated cleanup.
-- Build a GUI executable with ps2exe.
+- Scan Cisco AnyConnect and Cisco Secure Client services, processes, folders, registry keys, user AppData locations, ProgramData locations, installed programs, and protected Cisco roots.
+- Smart discovery under `Program Files\Cisco` and `Program Files (x86)\Cisco`.
+- Non-destructive Dry Run / WhatIf cleanup preview.
+- Registry and folder backups before removal when backup is enabled.
+- HTML, CSV, and JSON export.
+- HTML reports with escaped content.
+- VPN-related diagnostics for DNS, ping, TCP 443, proxy settings, routes, adapters, and conflicting VPN tools.
+- Safety guards that block broad Cisco registry roots and broad Cisco folders from automated cleanup.
+- GUI executable build with ps2exe.
 
 ## Requirements
 
@@ -48,11 +51,11 @@ From the repository root:
 powershell -NoProfile -ExecutionPolicy Bypass -File .\src\SecureClientCleanup.ps1
 ```
 
-If the script is not elevated or not running in STA mode, the bootstrap logic relaunches it with the required settings.
+The bootstrap relaunches the utility elevated and in STA mode when required.
 
 ## Build EXE
 
-Install ps2exe when needed:
+Install ps2exe:
 
 ```powershell
 Install-Module ps2exe -Scope CurrentUser
@@ -70,15 +73,15 @@ Default output:
 dist\SecureClientCleanup.exe
 ```
 
-The build script prints the executable path, file size, and SHA256 hash after a successful build.
+After a successful build, the build script prints the executable SHA256 hash and output information.
 
-See [docs/BUILD.md](docs/BUILD.md) for build options such as `-NoIcon`, `-Console`, and `-InstallPs2Exe`.
+See the [Build Guide](docs/BUILD.md) for additional build options.
 
 ## Logs And Reports
 
-The application writes logs, scan exports, registry backups, folder backups, and HTML reports under the cleanup output directory selected in the GUI. The default paths are shown in the GUI before running actions.
+Logs, scan exports, backups, and HTML reports are written under the cleanup output directory selected in the GUI.
 
-Reports and bundles can include local paths, hostnames, service names, adapter names, and diagnostic details. Treat them as support artifacts, not public files.
+These artifacts may contain local paths, hostnames, service names, adapter names, and diagnostic details. Review and sanitize them before sharing.
 
 ## Important Limitations
 
@@ -95,5 +98,5 @@ Reports and bundles can include local paths, hostnames, service names, adapter n
 - [Operating Modes](docs/OPERATING_MODES.md)
 - [Build Guide](docs/BUILD.md)
 - [Troubleshooting](docs/TROUBLESHOOTING.md)
-- [Security](SECURITY.md)
+- [Security Policy](SECURITY.md)
 - [Contributing](CONTRIBUTING.md)
