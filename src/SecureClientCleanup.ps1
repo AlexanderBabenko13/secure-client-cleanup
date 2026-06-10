@@ -148,23 +148,23 @@ Add-Type -AssemblyName PresentationFramework,PresentationCore,WindowsBase,System
 [xml]$xaml = @'
 <Window xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
         xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
-        Title="Secure Client Cleanup Utility" Height="820" Width="1280"
-        MinHeight="760" MinWidth="1180" WindowStartupLocation="CenterScreen"
-        Background="#0B1020" Foreground="#E5E7EB" FontFamily="Segoe UI">
+        Title="Очистка Cisco Secure Client" Height="960" Width="1360"
+        MinHeight="860" MinWidth="1180" WindowStartupLocation="CenterScreen"
+        Background="#0F0F0F" Foreground="#F5F5F5" FontFamily="Segoe UI">
   <Window.Resources>
     <ResourceDictionary>
-      <Color x:Key="ColorBg">#0B1020</Color>
-      <Color x:Key="ColorPanel">#111827</Color>
-      <Color x:Key="ColorPanelAlt">#162033</Color>
-      <Color x:Key="ColorCard">#172033</Color>
-      <Color x:Key="ColorCardSoft">#1B2A44</Color>
-      <Color x:Key="ColorBorder">#31435F</Color>
-      <Color x:Key="ColorText">#E5E7EB</Color>
-      <Color x:Key="ColorMuted">#94A3B8</Color>
-      <Color x:Key="ColorAccent">#38BDF8</Color>
-      <Color x:Key="ColorSuccess">#22C55E</Color>
-      <Color x:Key="ColorWarn">#F59E0B</Color>
-      <Color x:Key="ColorDanger">#EF4444</Color>
+      <Color x:Key="ColorBg">#0F0F0F</Color>
+      <Color x:Key="ColorPanel">#181818</Color>
+      <Color x:Key="ColorPanelAlt">#202020</Color>
+      <Color x:Key="ColorCard">#1C1C1C</Color>
+      <Color x:Key="ColorCardSoft">#242424</Color>
+      <Color x:Key="ColorBorder">#3A3A3A</Color>
+      <Color x:Key="ColorText">#F5F5F5</Color>
+      <Color x:Key="ColorMuted">#B3B3B3</Color>
+      <Color x:Key="ColorAccent">#60CDFF</Color>
+      <Color x:Key="ColorSuccess">#6CCB5F</Color>
+      <Color x:Key="ColorWarn">#FCE100</Color>
+      <Color x:Key="ColorDanger">#FF99A4</Color>
 
       <SolidColorBrush x:Key="BrushBg" Color="{StaticResource ColorBg}"/>
       <SolidColorBrush x:Key="BrushPanel" Color="{StaticResource ColorPanel}"/>
@@ -178,6 +178,11 @@ Add-Type -AssemblyName PresentationFramework,PresentationCore,WindowsBase,System
       <SolidColorBrush x:Key="BrushSuccess" Color="{StaticResource ColorSuccess}"/>
       <SolidColorBrush x:Key="BrushWarn" Color="{StaticResource ColorWarn}"/>
       <SolidColorBrush x:Key="BrushDanger" Color="{StaticResource ColorDanger}"/>
+      <LinearGradientBrush x:Key="BrushWindow" StartPoint="0,0" EndPoint="1,1">
+        <GradientStop Color="#161616" Offset="0"/>
+        <GradientStop Color="#0F0F0F" Offset="0.55"/>
+        <GradientStop Color="#121820" Offset="1"/>
+      </LinearGradientBrush>
 
       <Style TargetType="TextBlock">
         <Setter Property="Foreground" Value="{StaticResource BrushText}"/>
@@ -186,13 +191,13 @@ Add-Type -AssemblyName PresentationFramework,PresentationCore,WindowsBase,System
 
       <Style x:Key="TitleText" TargetType="TextBlock">
         <Setter Property="Foreground" Value="{StaticResource BrushText}"/>
-        <Setter Property="FontSize" Value="26"/>
+        <Setter Property="FontSize" Value="28"/>
         <Setter Property="FontWeight" Value="SemiBold"/>
       </Style>
 
       <Style x:Key="SectionTitle" TargetType="TextBlock">
         <Setter Property="Foreground" Value="{StaticResource BrushText}"/>
-        <Setter Property="FontSize" Value="15"/>
+        <Setter Property="FontSize" Value="16"/>
         <Setter Property="FontWeight" Value="SemiBold"/>
         <Setter Property="Margin" Value="0,0,0,8"/>
       </Style>
@@ -200,47 +205,54 @@ Add-Type -AssemblyName PresentationFramework,PresentationCore,WindowsBase,System
       <Style x:Key="MutedText" TargetType="TextBlock">
         <Setter Property="Foreground" Value="{StaticResource BrushMuted}"/>
         <Setter Property="FontSize" Value="12"/>
+        <Setter Property="TextWrapping" Value="Wrap"/>
       </Style>
 
       <Style x:Key="Card" TargetType="Border">
         <Setter Property="Background" Value="{StaticResource BrushCard}"/>
         <Setter Property="BorderBrush" Value="{StaticResource BrushBorder}"/>
         <Setter Property="BorderThickness" Value="1"/>
-        <Setter Property="CornerRadius" Value="14"/>
-        <Setter Property="Padding" Value="12"/>
-        <Setter Property="Margin" Value="0,0,0,10"/>
+        <Setter Property="CornerRadius" Value="12"/>
+        <Setter Property="Padding" Value="16"/>
+        <Setter Property="Margin" Value="0,0,0,12"/>
       </Style>
 
       <Style x:Key="SoftCard" TargetType="Border" BasedOn="{StaticResource Card}">
         <Setter Property="Background" Value="{StaticResource BrushCardSoft}"/>
-        <Setter Property="BorderBrush" Value="#3B5275"/>
-        <Setter Property="CornerRadius" Value="12"/>
-        <Setter Property="Padding" Value="10"/>
+        <Setter Property="BorderBrush" Value="#333333"/>
+        <Setter Property="CornerRadius" Value="10"/>
+        <Setter Property="Padding" Value="12"/>
+      </Style>
+
+      <Style x:Key="MetricCard" TargetType="Border" BasedOn="{StaticResource SoftCard}">
+        <Setter Property="Padding" Value="10,5"/>
+        <Setter Property="Margin" Value="0"/>
+        <Setter Property="VerticalAlignment" Value="Stretch"/>
       </Style>
 
       <Style TargetType="Button">
-        <Setter Property="Background" Value="#22304A"/>
+        <Setter Property="Background" Value="#2D2D2D"/>
         <Setter Property="Foreground" Value="{StaticResource BrushText}"/>
-        <Setter Property="BorderBrush" Value="#3B5275"/>
+        <Setter Property="BorderBrush" Value="#454545"/>
         <Setter Property="BorderThickness" Value="1"/>
-        <Setter Property="Padding" Value="12,8"/>
-        <Setter Property="MinHeight" Value="36"/>
+        <Setter Property="Padding" Value="14,9"/>
+        <Setter Property="MinHeight" Value="38"/>
         <Setter Property="FontWeight" Value="SemiBold"/>
         <Setter Property="Cursor" Value="Hand"/>
         <Setter Property="Template">
           <Setter.Value>
             <ControlTemplate TargetType="Button">
               <Border Background="{TemplateBinding Background}" BorderBrush="{TemplateBinding BorderBrush}"
-                      BorderThickness="{TemplateBinding BorderThickness}" CornerRadius="10" Padding="{TemplateBinding Padding}">
+                      BorderThickness="{TemplateBinding BorderThickness}" CornerRadius="8" Padding="{TemplateBinding Padding}">
                 <ContentPresenter HorizontalAlignment="Center" VerticalAlignment="Center"/>
               </Border>
               <ControlTemplate.Triggers>
                 <Trigger Property="IsMouseOver" Value="True">
-                  <Setter Property="Background" Value="#2F456A"/>
+                  <Setter Property="Background" Value="#3A3A3A"/>
                   <Setter Property="BorderBrush" Value="{StaticResource BrushAccent}"/>
                 </Trigger>
                 <Trigger Property="IsPressed" Value="True">
-                  <Setter Property="Background" Value="#1B2A44"/>
+                  <Setter Property="Background" Value="#252525"/>
                 </Trigger>
                 <Trigger Property="IsEnabled" Value="False">
                   <Setter Property="Opacity" Value="0.45"/>
@@ -252,19 +264,26 @@ Add-Type -AssemblyName PresentationFramework,PresentationCore,WindowsBase,System
       </Style>
 
       <Style x:Key="AccentButton" TargetType="Button" BasedOn="{StaticResource {x:Type Button}}">
-        <Setter Property="Background" Value="#0EA5E9"/>
-        <Setter Property="BorderBrush" Value="#38BDF8"/>
-        <Setter Property="Foreground" Value="#F8FAFC"/>
+        <Setter Property="Background" Value="#60CDFF"/>
+        <Setter Property="BorderBrush" Value="#60CDFF"/>
+        <Setter Property="Foreground" Value="#0F0F0F"/>
       </Style>
 
       <Style x:Key="DangerButton" TargetType="Button" BasedOn="{StaticResource {x:Type Button}}">
-        <Setter Property="Background" Value="#7F1D1D"/>
-        <Setter Property="BorderBrush" Value="#EF4444"/>
+        <Setter Property="Background" Value="#C42B1C"/>
+        <Setter Property="BorderBrush" Value="#FF99A4"/>
+        <Setter Property="Foreground" Value="#FFFFFF"/>
+      </Style>
+
+      <Style x:Key="WarningButton" TargetType="Button" BasedOn="{StaticResource {x:Type Button}}">
+        <Setter Property="Background" Value="#3B3211"/>
+        <Setter Property="BorderBrush" Value="#D8B600"/>
+        <Setter Property="Foreground" Value="#FFF4B8"/>
       </Style>
 
       <Style TargetType="CheckBox">
         <Setter Property="Foreground" Value="{StaticResource BrushText}"/>
-        <Setter Property="Margin" Value="0,5"/>
+        <Setter Property="Margin" Value="0,1"/>
         <Setter Property="FontSize" Value="13"/>
         <Setter Property="VerticalContentAlignment" Value="Center"/>
         <Setter Property="Template">
@@ -275,15 +294,15 @@ Add-Type -AssemblyName PresentationFramework,PresentationCore,WindowsBase,System
                   <ColumnDefinition Width="22"/>
                   <ColumnDefinition Width="*"/>
                 </Grid.ColumnDefinitions>
-                <Border x:Name="Box" Width="16" Height="16" CornerRadius="4" Background="#0F172A"
-                        BorderBrush="#4B6284" BorderThickness="1.2" HorizontalAlignment="Left" VerticalAlignment="Center"/>
+                <Border x:Name="Box" Width="16" Height="16" CornerRadius="4" Background="#202020"
+                        BorderBrush="#707070" BorderThickness="1.2" HorizontalAlignment="Left" VerticalAlignment="Center"/>
                 <Path x:Name="CheckMark" Grid.Column="0" Data="M 3 8 L 7 12 L 14 4" Stroke="#FFFFFF" StrokeThickness="2"
                       StrokeStartLineCap="Round" StrokeEndLineCap="Round" Visibility="Collapsed"/>
                 <ContentPresenter Grid.Column="1" VerticalAlignment="Center" RecognizesAccessKey="True"/>
               </Grid>
               <ControlTemplate.Triggers>
                 <Trigger Property="IsChecked" Value="True">
-                  <Setter TargetName="Box" Property="Background" Value="{StaticResource BrushAccent}"/>
+                  <Setter TargetName="Box" Property="Background" Value="#0078D4"/>
                   <Setter TargetName="Box" Property="BorderBrush" Value="{StaticResource BrushAccent}"/>
                   <Setter TargetName="CheckMark" Property="Visibility" Value="Visible"/>
                 </Trigger>
@@ -301,7 +320,7 @@ Add-Type -AssemblyName PresentationFramework,PresentationCore,WindowsBase,System
 
       <Style TargetType="RadioButton">
         <Setter Property="Foreground" Value="{StaticResource BrushText}"/>
-        <Setter Property="Margin" Value="0,5"/>
+        <Setter Property="Margin" Value="0,1"/>
         <Setter Property="FontSize" Value="13"/>
         <Setter Property="VerticalContentAlignment" Value="Center"/>
         <Setter Property="Template">
@@ -312,7 +331,7 @@ Add-Type -AssemblyName PresentationFramework,PresentationCore,WindowsBase,System
                   <ColumnDefinition Width="22"/>
                   <ColumnDefinition Width="*"/>
                 </Grid.ColumnDefinitions>
-                <Ellipse x:Name="Ring" Width="16" Height="16" Stroke="#4B6284" StrokeThickness="1.3" Fill="#0F172A"
+                <Ellipse x:Name="Ring" Width="16" Height="16" Stroke="#707070" StrokeThickness="1.3" Fill="#202020"
                          HorizontalAlignment="Left" VerticalAlignment="Center"/>
                 <Ellipse x:Name="Dot" Width="8" Height="8" Fill="{StaticResource BrushAccent}" HorizontalAlignment="Left"
                          VerticalAlignment="Center" Margin="4,0,0,0" Visibility="Collapsed"/>
@@ -333,7 +352,7 @@ Add-Type -AssemblyName PresentationFramework,PresentationCore,WindowsBase,System
       </Style>
 
       <Style TargetType="TextBox">
-        <Setter Property="Background" Value="#0F172A"/>
+        <Setter Property="Background" Value="#202020"/>
         <Setter Property="Foreground" Value="{StaticResource BrushText}"/>
         <Setter Property="BorderBrush" Value="{StaticResource BrushBorder}"/>
         <Setter Property="BorderThickness" Value="1"/>
@@ -342,28 +361,101 @@ Add-Type -AssemblyName PresentationFramework,PresentationCore,WindowsBase,System
       </Style>
 
       <Style x:Key="ConsoleTextBox" TargetType="TextBox" BasedOn="{StaticResource {x:Type TextBox}}">
-        <Setter Property="Background" Value="#07111F"/>
-        <Setter Property="Foreground" Value="#D1E7FF"/>
-        <Setter Property="BorderBrush" Value="#27415F"/>
+        <Setter Property="Background" Value="#050A14"/>
+        <Setter Property="Foreground" Value="#E5F4FF"/>
+        <Setter Property="BorderBrush" Value="#2A3A55"/>
+        <Setter Property="BorderThickness" Value="1"/>
         <Setter Property="FontFamily" Value="Consolas"/>
-        <Setter Property="FontSize" Value="12"/>
+        <Setter Property="FontSize" Value="14"/>
         <Setter Property="Padding" Value="10"/>
+        <Setter Property="MinHeight" Value="140"/>
+      </Style>
+
+      <Style TargetType="TabControl">
+        <Setter Property="Background" Value="#050A14"/>
+        <Setter Property="BorderBrush" Value="#2A3A55"/>
+        <Setter Property="BorderThickness" Value="1"/>
+        <Setter Property="Template">
+          <Setter.Value>
+            <ControlTemplate TargetType="TabControl">
+              <Grid KeyboardNavigation.TabNavigation="Local">
+                <Grid.RowDefinitions>
+                  <RowDefinition Height="Auto"/>
+                  <RowDefinition Height="*"/>
+                </Grid.RowDefinitions>
+                <TabPanel Grid.Row="0" IsItemsHost="True" Background="#171C26" KeyboardNavigation.TabIndex="1"/>
+                <Border Grid.Row="1" Background="{TemplateBinding Background}" BorderBrush="{TemplateBinding BorderBrush}"
+                        BorderThickness="{TemplateBinding BorderThickness}" CornerRadius="0,0,8,8">
+                  <ContentPresenter x:Name="PART_SelectedContentHost" ContentSource="SelectedContent" Margin="0"/>
+                </Border>
+              </Grid>
+            </ControlTemplate>
+          </Setter.Value>
+        </Setter>
+      </Style>
+
+      <Style TargetType="TabItem">
+        <Setter Property="Foreground" Value="#C8D3E0"/>
+        <Setter Property="Background" Value="#242A34"/>
+        <Setter Property="BorderBrush" Value="#39465A"/>
+        <Setter Property="Padding" Value="18,9"/>
+        <Setter Property="MinHeight" Value="38"/>
+        <Setter Property="FontWeight" Value="SemiBold"/>
+        <Setter Property="Template">
+          <Setter.Value>
+            <ControlTemplate TargetType="TabItem">
+              <Border x:Name="TabBorder" Background="{TemplateBinding Background}" BorderBrush="{TemplateBinding BorderBrush}"
+                      BorderThickness="1,1,1,0" CornerRadius="8,8,0,0" Margin="0,0,4,0"
+                      Padding="{TemplateBinding Padding}" MinHeight="{TemplateBinding MinHeight}">
+                <ContentPresenter ContentSource="Header" HorizontalAlignment="Center" VerticalAlignment="Center"/>
+              </Border>
+              <ControlTemplate.Triggers>
+                <Trigger Property="IsSelected" Value="True">
+                  <Setter Property="Foreground" Value="#E5F4FF"/>
+                  <Setter TargetName="TabBorder" Property="Background" Value="#10253F"/>
+                  <Setter TargetName="TabBorder" Property="BorderBrush" Value="#60CDFF"/>
+                  <Setter TargetName="TabBorder" Property="BorderThickness" Value="1,1,1,3"/>
+                </Trigger>
+                <Trigger Property="IsMouseOver" Value="True">
+                  <Setter TargetName="TabBorder" Property="Background" Value="#2D3541"/>
+                  <Setter Property="Foreground" Value="#FFFFFF"/>
+                </Trigger>
+                <Trigger Property="IsEnabled" Value="False">
+                  <Setter Property="Opacity" Value="0.45"/>
+                </Trigger>
+              </ControlTemplate.Triggers>
+            </ControlTemplate>
+          </Setter.Value>
+        </Setter>
+      </Style>
+
+      <Style x:Key="CompactButton" TargetType="Button" BasedOn="{StaticResource {x:Type Button}}">
+        <Setter Property="MinHeight" Value="30"/>
+        <Setter Property="Padding" Value="10,5"/>
+        <Setter Property="FontSize" Value="12"/>
+      </Style>
+
+      <Style x:Key="ActionButton" TargetType="Button" BasedOn="{StaticResource {x:Type Button}}">
+        <Setter Property="Padding" Value="8,7"/>
+        <Setter Property="FontSize" Value="12"/>
       </Style>
 
       <Style TargetType="DataGrid">
-        <Setter Property="Background" Value="#0F172A"/>
+        <Setter Property="Background" Value="#181818"/>
         <Setter Property="Foreground" Value="{StaticResource BrushText}"/>
+        <Setter Property="FontSize" Value="12"/>
+        <Setter Property="RowHeight" Value="34"/>
         <Setter Property="BorderBrush" Value="{StaticResource BrushBorder}"/>
         <Setter Property="BorderThickness" Value="1"/>
-        <Setter Property="RowBackground" Value="#111827"/>
-        <Setter Property="AlternatingRowBackground" Value="#162033"/>
+        <Setter Property="RowBackground" Value="#1C1C1C"/>
+        <Setter Property="AlternatingRowBackground" Value="#222222"/>
         <Setter Property="GridLinesVisibility" Value="Horizontal"/>
         <Setter Property="HorizontalGridLinesBrush" Value="{StaticResource BrushBorder}"/>
         <Setter Property="VerticalGridLinesBrush" Value="{StaticResource BrushBorder}"/>
       </Style>
 
       <Style TargetType="DataGridColumnHeader">
-        <Setter Property="Background" Value="#1E293B"/>
+        <Setter Property="Background" Value="#292929"/>
         <Setter Property="Foreground" Value="{StaticResource BrushText}"/>
         <Setter Property="BorderBrush" Value="{StaticResource BrushBorder}"/>
         <Setter Property="FontWeight" Value="SemiBold"/>
@@ -376,369 +468,269 @@ Add-Type -AssemblyName PresentationFramework,PresentationCore,WindowsBase,System
       </Style>
 
       <Style TargetType="ProgressBar">
-        <Setter Property="Height" Value="8"/>
-        <Setter Property="Background" Value="#1E293B"/>
+        <Setter Property="Height" Value="4"/>
+        <Setter Property="Background" Value="#25303B"/>
         <Setter Property="Foreground" Value="{StaticResource BrushAccent}"/>
+        <Setter Property="BorderThickness" Value="0"/>
       </Style>
 
-      <Style TargetType="ScrollBar">
-        <Setter Property="Background" Value="#0F172A"/>
-        <Setter Property="Width" Value="8"/>
-        <Setter Property="MinWidth" Value="8"/>
-        <Setter Property="Template">
-          <Setter.Value>
-            <ControlTemplate TargetType="ScrollBar">
-              <Grid Background="#0B1020" Width="8">
-                <Track x:Name="PART_Track" IsDirectionReversed="True">
-                  <Track.DecreaseRepeatButton>
-                    <RepeatButton Command="ScrollBar.PageUpCommand" Opacity="0" IsTabStop="False"/>
-                  </Track.DecreaseRepeatButton>
-                  <Track.Thumb>
-                    <Thumb>
-                      <Thumb.Template>
-                        <ControlTemplate TargetType="Thumb">
-                          <Border Background="#334155" CornerRadius="4" Margin="2,0"/>
-                        </ControlTemplate>
-                      </Thumb.Template>
-                    </Thumb>
-                  </Track.Thumb>
-                  <Track.IncreaseRepeatButton>
-                    <RepeatButton Command="ScrollBar.PageDownCommand" Opacity="0" IsTabStop="False"/>
-                  </Track.IncreaseRepeatButton>
-                </Track>
-              </Grid>
-            </ControlTemplate>
-          </Setter.Value>
-        </Setter>
-      </Style>
-
-      <Style x:Key="NavItem" TargetType="Border">
-        <Setter Property="CornerRadius" Value="10"/>
-        <Setter Property="Padding" Value="12,9"/>
-        <Setter Property="Margin" Value="0,3"/>
-        <Setter Property="MinHeight" Value="40"/>
-        <Setter Property="Background" Value="Transparent"/>
-      </Style>
-
-      <Style x:Key="NavItemSelected" TargetType="Border" BasedOn="{StaticResource NavItem}">
-        <Setter Property="Background" Value="#183352"/>
-        <Setter Property="BorderBrush" Value="{StaticResource BrushAccent}"/>
-        <Setter Property="BorderThickness" Value="1"/>
-      </Style>
     </ResourceDictionary>
   </Window.Resources>
 
-  <Grid Background="{StaticResource BrushBg}">
+  <Grid Background="{StaticResource BrushWindow}">
     <Grid.ColumnDefinitions>
-      <ColumnDefinition Width="230"/>
+      <ColumnDefinition Width="220"/>
       <ColumnDefinition Width="*"/>
-      <ColumnDefinition Width="300"/>
+      <ColumnDefinition Width="280"/>
     </Grid.ColumnDefinitions>
 
-    <Border Grid.Column="0" Background="#0F172A" BorderBrush="{StaticResource BrushBorder}" BorderThickness="0,0,1,0" Padding="18">
+    <Border Grid.Column="0" Background="#D9181818" BorderBrush="{StaticResource BrushBorder}" BorderThickness="0,0,1,0" Padding="18">
       <Grid>
         <Grid.RowDefinitions>
           <RowDefinition Height="Auto"/>
           <RowDefinition Height="*"/>
           <RowDefinition Height="Auto"/>
         </Grid.RowDefinitions>
-
         <StackPanel>
-          <Border Width="62" Height="62" CornerRadius="14" Background="#123047" BorderBrush="{StaticResource BrushAccent}" BorderThickness="1" HorizontalAlignment="Left" Margin="0,0,0,14">
-            <Grid>
-              <TextBlock Text="SC" FontSize="20" FontWeight="Bold" Foreground="{StaticResource BrushAccent}" HorizontalAlignment="Center" VerticalAlignment="Center"/>
-            </Grid>
+          <Border Width="56" Height="56" CornerRadius="12" Background="#20303A" BorderBrush="{StaticResource BrushAccent}" BorderThickness="1" HorizontalAlignment="Left" Margin="0,0,0,14">
+            <TextBlock Text="SC" FontSize="20" FontWeight="Bold" Foreground="{StaticResource BrushAccent}" HorizontalAlignment="Center" VerticalAlignment="Center"/>
           </Border>
-          <TextBlock Text="Secure Client" FontSize="20" FontWeight="SemiBold"/>
-          <TextBlock Text="Cleanup Utility" Style="{StaticResource MutedText}" Margin="0,2,0,20"/>
-
-          <Border Style="{StaticResource SoftCard}" Margin="0,0,0,18">
+          <TextBlock Text="Cisco Secure Client" FontSize="19" FontWeight="SemiBold"/>
+          <TextBlock Text="Утилита очистки" Style="{StaticResource MutedText}" Margin="0,2,0,18"/>
+          <Border Style="{StaticResource SoftCard}" BorderBrush="#496675">
             <StackPanel>
-              <TextBlock Text="Safety-first cleanup" FontWeight="SemiBold"/>
-              <TextBlock Text="Dry Run is the default path. Broad Cisco roots stay blocked." Style="{StaticResource MutedText}" Margin="0,6,0,0"/>
+              <TextBlock Text="Безопасная очистка" FontWeight="SemiBold"/>
+              <TextBlock Text="Сначала выполните сканирование и пробный запуск." Style="{StaticResource MutedText}" Margin="0,6,0,0"/>
             </StackPanel>
           </Border>
         </StackPanel>
-
-        <StackPanel Grid.Row="1" Margin="0,6,0,0">
-          <Border Style="{StaticResource NavItemSelected}"><TextBlock Text="Overview" FontWeight="SemiBold" Foreground="{StaticResource BrushAccent}"/></Border>
-          <Border Style="{StaticResource NavItem}"><TextBlock Text="Cleanup"/></Border>
-          <Border Style="{StaticResource NavItem}"><TextBlock Text="Diagnostics"/></Border>
-          <Border Style="{StaticResource NavItem}"><TextBlock Text="Reports"/></Border>
-          <Border Style="{StaticResource NavItem}"><TextBlock Text="Settings"/></Border>
+        <StackPanel Grid.Row="1" Margin="0,12,0,0">
+          <TextBlock Text="ПОРЯДОК РАБОТЫ" Style="{StaticResource MutedText}" Margin="0,0,0,8"/>
+          <TextBlock Text="1. Сканирование" Margin="0,4"/>
+          <TextBlock Text="2. Пробный запуск" Margin="0,4"/>
+          <TextBlock Text="3. Резервная копия" Margin="0,4"/>
+          <TextBlock Text="4. Очистка" Margin="0,4"/>
+          <TextBlock Text="5. Перезагрузка" Margin="0,4"/>
+          <TextBlock Text="6. Переустановка Cisco Secure Client" Margin="0,4"/>
         </StackPanel>
-
         <StackPanel Grid.Row="2">
-          <Border CornerRadius="10" Background="#12351F" BorderBrush="#2B7A44" BorderThickness="1" Padding="10" Margin="0,0,0,10">
+          <Border CornerRadius="8" Background="#18351C" BorderBrush="#397D42" BorderThickness="1" Padding="10" Margin="0,0,0,10">
             <StackPanel>
-              <TextBlock Text="System healthy" Foreground="{StaticResource BrushSuccess}" FontWeight="SemiBold"/>
-              <TextBlock Text="Safe defaults active" Style="{StaticResource MutedText}" Margin="0,3,0,0"/>
+              <TextBlock Text="Система готова" Foreground="{StaticResource BrushSuccess}" FontWeight="SemiBold"/>
+              <TextBlock Text="Безопасные параметры активны" Style="{StaticResource MutedText}" Margin="0,3,0,0"/>
             </StackPanel>
           </Border>
-          <TextBlock Text="Version" Style="{StaticResource MutedText}"/>
-          <TextBlock Text="Build: local PowerShell 5.1" Style="{StaticResource MutedText}" Margin="0,4,0,0"/>
+          <TextBlock Text="Локальная сборка PowerShell 5.1" Style="{StaticResource MutedText}"/>
         </StackPanel>
       </Grid>
     </Border>
 
-    <Grid Grid.Column="1" Margin="20,18,18,18">
+    <Grid Grid.Column="1" Margin="16">
       <Grid.RowDefinitions>
         <RowDefinition Height="Auto"/>
-        <RowDefinition Height="*"/>
-        <RowDefinition Height="Auto"/>
+        <RowDefinition Height="128"/>
+        <RowDefinition Height="185"/>
+        <RowDefinition Height="142"/>
+        <RowDefinition Height="1.6*" MinHeight="150"/>
+        <RowDefinition Height="1*" MinHeight="210" MaxHeight="250"/>
       </Grid.RowDefinitions>
 
-      <Grid Grid.Row="0" Margin="0,0,0,12">
-        <Grid.ColumnDefinitions>
-          <ColumnDefinition Width="*" MinWidth="430"/>
-          <ColumnDefinition Width="Auto"/>
-        </Grid.ColumnDefinitions>
-        <StackPanel Grid.Column="0" Margin="0,0,24,0">
-          <TextBlock Text="Secure Client Cleanup Utility" Style="{StaticResource TitleText}" TextWrapping="NoWrap"/>
-          <TextBlock Text="Modern safety dashboard for Cisco AnyConnect / Secure Client reinstall preparation" Style="{StaticResource MutedText}" Margin="0,4,0,0" TextTrimming="CharacterEllipsis" TextWrapping="NoWrap"/>
+      <Grid Margin="0,0,0,10">
+        <Grid.ColumnDefinitions><ColumnDefinition Width="*"/><ColumnDefinition Width="Auto"/></Grid.ColumnDefinitions>
+        <StackPanel>
+          <TextBlock Text="Очистка Cisco Secure Client" Style="{StaticResource TitleText}"/>
+          <TextBlock Text="Безопасная подготовка ПК к переустановке Cisco AnyConnect / Secure Client" Style="{StaticResource MutedText}" Margin="0,4,0,0"/>
         </StackPanel>
-        <StackPanel Grid.Column="1" Orientation="Horizontal" VerticalAlignment="Center">
-          <Button x:Name="btnAnalyze" Content="Dry Run / WhatIf" Style="{StaticResource AccentButton}" Width="142" Height="38" Margin="0,0,8,0"/>
-          <Button x:Name="btnRun" Content="Cleanup" Style="{StaticResource DangerButton}" Width="96" Height="38" Margin="0,0,8,0"/>
-          <Button x:Name="btnClose" Content="Close" Width="76" Height="38"/>
-        </StackPanel>
+        <Button x:Name="btnClose" Grid.Column="1" Content="Закрыть" Width="86" VerticalAlignment="Center"/>
       </Grid>
 
-      <ScrollViewer Grid.Row="1" VerticalScrollBarVisibility="Auto" Padding="0,0,6,0" Background="Transparent">
-        <StackPanel>
-          <Grid Margin="0,0,0,12">
-            <Grid.ColumnDefinitions>
-              <ColumnDefinition Width="*"/>
-              <ColumnDefinition Width="*"/>
-              <ColumnDefinition Width="*"/>
-            </Grid.ColumnDefinitions>
-            <Border Style="{StaticResource Card}" Margin="0,0,10,0">
-              <StackPanel>
-                <TextBlock Text="Device Ready" Style="{StaticResource SectionTitle}"/>
-                <TextBlock Text="Admin + STA bootstrap active" Style="{StaticResource MutedText}"/>
-                <TextBlock Text="Ready" Foreground="{StaticResource BrushSuccess}" FontSize="20" FontWeight="SemiBold" Margin="0,6,0,0"/>
-              </StackPanel>
-            </Border>
-            <Border Grid.Column="1" Style="{StaticResource Card}" Margin="0,0,10,0">
-              <StackPanel>
-                <TextBlock Text="Safety State" Style="{StaticResource SectionTitle}"/>
-                <TextBlock Text="Broad Cisco roots are blocked" Style="{StaticResource MutedText}"/>
-                <TextBlock Text="Protected" Foreground="{StaticResource BrushAccent}" FontSize="20" FontWeight="SemiBold" Margin="0,6,0,0"/>
-              </StackPanel>
-            </Border>
-            <Border Grid.Column="2" Style="{StaticResource Card}">
-              <StackPanel>
-                <TextBlock Text="Last Scan" Style="{StaticResource SectionTitle}"/>
-                <TextBlock x:Name="lblSummary" Text="Nothing scanned yet" Style="{StaticResource MutedText}"/>
-                <ProgressBar x:Name="pb" Minimum="0" Maximum="100" Margin="0,12,0,0"/>
-              </StackPanel>
-            </Border>
-          </Grid>
-
-          <Border Style="{StaticResource Card}">
-            <StackPanel>
-              <TextBlock Text="Safe Workflow" Style="{StaticResource SectionTitle}"/>
-              <UniformGrid Columns="6" Rows="1">
-                <Border Style="{StaticResource SoftCard}" Margin="0,0,8,0"><StackPanel><TextBlock Text="01" Style="{StaticResource MutedText}"/><TextBlock Text="Scan" FontWeight="SemiBold"/></StackPanel></Border>
-                <Border Style="{StaticResource SoftCard}" Margin="0,0,8,0"><StackPanel><TextBlock Text="02" Style="{StaticResource MutedText}"/><TextBlock Text="Dry Run" FontWeight="SemiBold"/></StackPanel></Border>
-                <Border Style="{StaticResource SoftCard}" Margin="0,0,8,0"><StackPanel><TextBlock Text="03" Style="{StaticResource MutedText}"/><TextBlock Text="Backup" FontWeight="SemiBold"/></StackPanel></Border>
-                <Border Style="{StaticResource SoftCard}" Margin="0,0,8,0"><StackPanel><TextBlock Text="04" Style="{StaticResource MutedText}"/><TextBlock Text="Cleanup" FontWeight="SemiBold"/></StackPanel></Border>
-                <Border Style="{StaticResource SoftCard}" Margin="0,0,8,0"><StackPanel><TextBlock Text="05" Style="{StaticResource MutedText}"/><TextBlock Text="Reboot" FontWeight="SemiBold"/></StackPanel></Border>
-                <Border Style="{StaticResource SoftCard}"><StackPanel><TextBlock Text="06" Style="{StaticResource MutedText}"/><TextBlock Text="Reinstall" FontWeight="SemiBold"/></StackPanel></Border>
-              </UniformGrid>
-            </StackPanel>
-          </Border>
-
+      <Grid Grid.Row="1" Margin="0,0,0,10">
+        <Grid.ColumnDefinitions><ColumnDefinition Width="1.7*"/><ColumnDefinition Width="1*"/></Grid.ColumnDefinitions>
+        <Border Style="{StaticResource Card}" Margin="0,0,10,0" BorderBrush="#397D42" Padding="12">
           <Grid>
+            <Grid.RowDefinitions><RowDefinition Height="Auto"/><RowDefinition Height="*"/></Grid.RowDefinitions>
+            <StackPanel>
+              <TextBlock Text="Безопасные действия" FontWeight="SemiBold" Foreground="{StaticResource BrushSuccess}"/>
+              <TextBlock Text="Не удаляют данные и используются для проверки состояния системы." Style="{StaticResource MutedText}"/>
+            </StackPanel>
+            <UniformGrid Grid.Row="1" Columns="5" Margin="0,10,0,0" VerticalAlignment="Center">
+              <Button x:Name="btnScan" Content="Сканировать" Style="{StaticResource AccentButton}" Height="42" Padding="8,7" Margin="0,0,6,0"/>
+              <Button x:Name="btnAnalyze" Content="Пробный запуск" Style="{StaticResource ActionButton}" Height="42" Margin="0,0,6,0"/>
+              <Button x:Name="btnDiag" Content="Диагностика" Style="{StaticResource ActionButton}" Height="42" Margin="0,0,6,0"/>
+              <Button x:Name="btnPing" Content="Проверить VPN" Style="{StaticResource ActionButton}" Height="42" Margin="0,0,6,0" ToolTip="Проверить доступ к vpn.1cbit.ru"/>
+              <Button x:Name="btnDisableAdapters" Content="Показать адаптеры" Style="{StaticResource ActionButton}" Height="42" Padding="6,7" FontSize="11" ToolTip="Показать подозрительные адаптеры без изменения системы"/>
+            </UniformGrid>
+          </Grid>
+        </Border>
+        <Border Grid.Column="1" Style="{StaticResource Card}" BorderBrush="#8C6D1F" Padding="12" Margin="0">
+          <Grid>
+            <Grid.RowDefinitions><RowDefinition Height="Auto"/><RowDefinition Height="*"/></Grid.RowDefinitions>
+            <StackPanel>
+              <TextBlock Text="Действия, изменяющие систему" FontWeight="SemiBold" Foreground="#FFF4B8"/>
+              <TextBlock Text="Используйте только после анализа результатов." Style="{StaticResource MutedText}"/>
+            </StackPanel>
+            <UniformGrid Grid.Row="1" Columns="2" Margin="0,10,0,0" VerticalAlignment="Center">
+              <Button x:Name="btnRun" Content="Очистить" Style="{StaticResource DangerButton}" Height="42" Padding="8,7" Margin="0,0,6,0"/>
+              <Button x:Name="btnStopGoodbye" Content="Остановить DPI / WinDivert" ToolTip="Остановить GoodbyeDPI / WinDivert" Style="{StaticResource WarningButton}" Height="42" Padding="6,7" FontSize="11"/>
+            </UniformGrid>
+          </Grid>
+        </Border>
+      </Grid>
+
+      <Border Grid.Row="2" Style="{StaticResource Card}" Padding="12" Margin="0,0,0,10">
+        <Grid>
+          <Grid.RowDefinitions><RowDefinition Height="Auto"/><RowDefinition Height="*"/></Grid.RowDefinitions>
+          <Grid Grid.Row="0">
+            <Grid.ColumnDefinitions><ColumnDefinition Width="*"/><ColumnDefinition Width="Auto"/></Grid.ColumnDefinitions>
+            <StackPanel>
+              <TextBlock Text="Параметры очистки" Style="{StaticResource SectionTitle}"/>
+              <TextBlock Text="Пробный запуск ничего не удаляет и рекомендуется перед очисткой." Foreground="{StaticResource BrushAccent}" FontSize="12"/>
+            </StackPanel>
+            <ProgressBar x:Name="pb" Grid.Column="1" Width="160" Minimum="0" Maximum="100"
+                         VerticalAlignment="Center" Visibility="Collapsed"
+                         ToolTip="Идёт сканирование..."/>
+          </Grid>
+          <Grid Grid.Row="1" Margin="0,8,0,0">
             <Grid.ColumnDefinitions>
-              <ColumnDefinition Width="1.2*"/>
               <ColumnDefinition Width="1*"/>
+              <ColumnDefinition Width="1.2*"/>
+              <ColumnDefinition Width="1.2*"/>
             </Grid.ColumnDefinitions>
-
-            <Border Style="{StaticResource Card}" Margin="0,0,12,12">
-              <StackPanel>
-                <TextBlock Text="Safety Controls" Style="{StaticResource SectionTitle}"/>
-                <Grid>
-                  <Grid.ColumnDefinitions>
-                    <ColumnDefinition Width="1*"/>
-                    <ColumnDefinition Width="1.25*"/>
-                  </Grid.ColumnDefinitions>
-                  <StackPanel>
-                    <CheckBox x:Name="cbWhatIf" Content="WhatIf / Dry Run" IsChecked="True"/>
-                    <CheckBox x:Name="cbFull" Content="Full cleanup" IsChecked="False"/>
-                    <CheckBox x:Name="cbServices" Content="Services / processes"/>
-                    <CheckBox x:Name="cbFolders" Content="Folders and AppData"/>
-                    <CheckBox x:Name="cbRegistry" Content="Registry"/>
-                  </StackPanel>
-                  <StackPanel Grid.Column="1" Margin="18,0,0,0">
-                    <RadioButton x:Name="rbCurrent" Content="Current user only" IsChecked="True"/>
-                    <RadioButton x:Name="rbAll" Content="All user profiles"/>
-                    <CheckBox x:Name="cbBackup" Content="Backup registry / folders"/>
-                    <CheckBox x:Name="cbHtml" Content="HTML report" IsChecked="True"/>
-                    <CheckBox x:Name="cbForce" Content="Force retry"/>
-                    <CheckBox x:Name="cbRestorePoint" Content="Create restore point" IsChecked="False"/>
-                    <CheckBox x:Name="cbSelectionOnly" Content="Selected rows only"/>
-                    <CheckBox x:Name="cbOnlyFound" Content="Show only found"/>
-                  </StackPanel>
-                </Grid>
-              </StackPanel>
-            </Border>
-
-            <Border Grid.Column="1" Style="{StaticResource Card}">
-              <StackPanel>
-                <TextBlock Text="Diagnostics Quick Actions" Style="{StaticResource SectionTitle}"/>
-                <Button x:Name="btnDiag" Content="Run Diagnostics" Margin="0,0,0,8"/>
-                <Button x:Name="btnDisableAdapters" Content="Disable suspicious adapters" Margin="0,0,0,8"/>
-                <Button x:Name="btnStopGoodbye" Content="Stop GoodbyeDPI / WinDivert" Margin="0,0,0,8"/>
-                <Button x:Name="btnPing" Content="Ping vpn.1cbit.ru"/>
-              </StackPanel>
-            </Border>
-          </Grid>
-
-          <Border Style="{StaticResource Card}">
             <StackPanel>
-              <TextBlock Text="Detected Components" Style="{StaticResource SectionTitle}"/>
-              <UniformGrid Columns="6" Rows="1">
-                <Border Style="{StaticResource SoftCard}" Height="76" Padding="8" Margin="0,0,8,0"><StackPanel><TextBlock Text="Services" Style="{StaticResource MutedText}"/><TextBlock Text="3" FontSize="19" FontWeight="SemiBold"/><TextBlock Text="targets" Style="{StaticResource MutedText}"/></StackPanel></Border>
-                <Border Style="{StaticResource SoftCard}" Height="76" Padding="8" Margin="0,0,8,0"><StackPanel><TextBlock Text="Folders" Style="{StaticResource MutedText}"/><TextBlock Text="Scoped" FontSize="15" FontWeight="SemiBold"/><TextBlock Text="known paths" Style="{StaticResource MutedText}"/></StackPanel></Border>
-                <Border Style="{StaticResource SoftCard}" Height="76" Padding="8" Margin="0,0,8,0"><StackPanel><TextBlock Text="Registry" Style="{StaticResource MutedText}"/><TextBlock Text="Service" FontSize="15" FontWeight="SemiBold"/><TextBlock Text="keys only" Style="{StaticResource MutedText}"/></StackPanel></Border>
-                <Border Style="{StaticResource SoftCard}" Height="76" Padding="8" Margin="0,0,8,0"><StackPanel><TextBlock Text="AppData" Style="{StaticResource MutedText}"/><TextBlock Text="User" FontSize="15" FontWeight="SemiBold"/><TextBlock Text="scoped" Style="{StaticResource MutedText}"/></StackPanel></Border>
-                <Border Style="{StaticResource SoftCard}" Height="76" Padding="8" Margin="0,0,8,0"><StackPanel><TextBlock Text="Diagnostics" Style="{StaticResource MutedText}"/><TextBlock Text="Ready" FontSize="15" FontWeight="SemiBold"/><TextBlock Text="network" Style="{StaticResource MutedText}"/></StackPanel></Border>
-                <Border Height="76" Background="#123047" BorderBrush="{StaticResource BrushAccent}" BorderThickness="1" CornerRadius="12" Padding="8"><StackPanel><TextBlock Text="Total" Style="{StaticResource MutedText}"/><TextBlock Text="Scan" FontSize="19" FontWeight="SemiBold" Foreground="{StaticResource BrushAccent}"/><TextBlock Text="first" Style="{StaticResource MutedText}"/></StackPanel></Border>
-              </UniformGrid>
+              <CheckBox x:Name="cbWhatIf" Content="Пробный запуск" IsChecked="True" Foreground="{StaticResource BrushAccent}" FontWeight="SemiBold"/>
+              <CheckBox x:Name="cbFull" Content="Полная очистка"/>
+              <CheckBox x:Name="cbServices" Content="Службы и процессы"/>
+              <CheckBox x:Name="cbFolders" Content="Папки и AppData"/>
+              <CheckBox x:Name="cbRegistry" Content="Реестр"/>
+            </StackPanel>
+            <StackPanel Grid.Column="1" Margin="16,0,0,0">
+              <RadioButton x:Name="rbCurrent" Content="Только текущий пользователь" IsChecked="True"/>
+              <RadioButton x:Name="rbAll" Content="Все профили пользователей"/>
+              <CheckBox x:Name="cbBackup" Content="Резервная копия реестра и папок"/>
+              <CheckBox x:Name="cbHtml" Content="Создать HTML-отчёт" IsChecked="True"/>
+            </StackPanel>
+            <StackPanel Grid.Column="2" Margin="16,0,0,0">
+              <CheckBox x:Name="cbForce" Content="Принудительный повтор"/>
+              <CheckBox x:Name="cbRestorePoint" Content="Создать точку восстановления"/>
+              <CheckBox x:Name="cbSelectionOnly" Content="Только выбранные строки"/>
+              <CheckBox x:Name="cbOnlyFound" Content="Показывать только найденное"/>
+            </StackPanel>
+          </Grid>
+        </Grid>
+      </Border>
+
+      <Border Grid.Row="3" Style="{StaticResource Card}" Padding="8" Margin="0,0,0,10">
+        <Grid>
+          <Grid.RowDefinitions><RowDefinition Height="Auto"/><RowDefinition Height="*"/></Grid.RowDefinitions>
+          <TextBlock Text="Найденные компоненты" Style="{StaticResource SectionTitle}" Margin="4,0,0,6"/>
+          <Grid Grid.Row="1">
+          <Grid.ColumnDefinitions>
+            <ColumnDefinition Width="*"/><ColumnDefinition Width="*"/><ColumnDefinition Width="*"/><ColumnDefinition Width="*"/>
+          </Grid.ColumnDefinitions>
+          <Grid.RowDefinitions><RowDefinition Height="*"/><RowDefinition Height="*"/></Grid.RowDefinitions>
+          <Border Style="{StaticResource MetricCard}" Margin="0,0,6,4"><StackPanel VerticalAlignment="Center"><TextBlock Text="Службы" Style="{StaticResource MutedText}"/><TextBlock x:Name="lblServicesCount" Text="После scan" FontSize="11" FontWeight="SemiBold"/></StackPanel></Border>
+          <Border Grid.Column="1" Style="{StaticResource MetricCard}" Margin="0,0,6,4"><StackPanel VerticalAlignment="Center"><TextBlock Text="Процессы" Style="{StaticResource MutedText}"/><TextBlock x:Name="lblProcessesCount" Text="После scan" FontSize="11" FontWeight="SemiBold"/></StackPanel></Border>
+          <Border Grid.Column="2" Style="{StaticResource MetricCard}" Margin="0,0,6,4"><StackPanel VerticalAlignment="Center"><TextBlock Text="Папки" Style="{StaticResource MutedText}"/><TextBlock x:Name="lblFoldersCount" Text="После scan" FontSize="11" FontWeight="SemiBold"/></StackPanel></Border>
+          <Border Grid.Column="3" Style="{StaticResource MetricCard}" Margin="0,0,0,4"><StackPanel VerticalAlignment="Center"><TextBlock Text="Реестр" Style="{StaticResource MutedText}"/><TextBlock x:Name="lblRegistryCount" Text="После scan" FontSize="11" FontWeight="SemiBold"/></StackPanel></Border>
+          <Border Grid.Row="1" Style="{StaticResource MetricCard}" Margin="0,0,6,0"><StackPanel VerticalAlignment="Center"><TextBlock Text="AppData" Style="{StaticResource MutedText}"/><TextBlock x:Name="lblAppDataCount" Text="После scan" FontSize="11" FontWeight="SemiBold"/></StackPanel></Border>
+          <Border Grid.Row="1" Grid.Column="1" Style="{StaticResource MetricCard}" Margin="0,0,6,0"><StackPanel VerticalAlignment="Center"><TextBlock Text="Установленные программы" Style="{StaticResource MutedText}"/><TextBlock x:Name="lblProgramsCount" Text="После scan" FontSize="11" FontWeight="SemiBold"/></StackPanel></Border>
+          <Border Grid.Row="1" Grid.Column="2" Style="{StaticResource MetricCard}" Margin="0,0,6,0"><StackPanel VerticalAlignment="Center"><TextBlock Text="Защищённые пути" Style="{StaticResource MutedText}"/><TextBlock x:Name="lblProtectedCount" Text="После scan" FontSize="11" FontWeight="SemiBold"/></StackPanel></Border>
+          <Border Grid.Row="1" Grid.Column="3" Background="#20303A" BorderBrush="{StaticResource BrushAccent}" BorderThickness="1" CornerRadius="10" Padding="10,5"><StackPanel VerticalAlignment="Center"><TextBlock Text="Итого элементов" Style="{StaticResource MutedText}"/><TextBlock x:Name="lblTotalCount" Text="После scan" FontSize="11" Foreground="{StaticResource BrushAccent}" FontWeight="SemiBold"/></StackPanel></Border>
+          </Grid>
+        </Grid>
+      </Border>
+
+      <Border Grid.Row="4" Style="{StaticResource Card}" Padding="10" Margin="0,0,0,10">
+        <Grid>
+          <Grid.RowDefinitions><RowDefinition Height="Auto"/><RowDefinition Height="*"/></Grid.RowDefinitions>
+          <Grid>
+            <Grid.ColumnDefinitions><ColumnDefinition Width="*"/><ColumnDefinition Width="220"/><ColumnDefinition Width="Auto"/></Grid.ColumnDefinitions>
+            <TextBlock Text="Результаты сканирования" Style="{StaticResource SectionTitle}"/>
+            <TextBox x:Name="tbScanSearch" Grid.Column="1" Height="30" Margin="8,0,10,0" Padding="8,4"
+                     VerticalContentAlignment="Center" ToolTip="Поиск по категории, объекту, состоянию и подробностям"/>
+            <StackPanel Grid.Column="2" Orientation="Horizontal">
+              <Button x:Name="btnScanResults" Content="Сканировать" Style="{StaticResource CompactButton}" BorderBrush="{StaticResource BrushAccent}" Margin="0,0,6,0"/>
+              <Button x:Name="btnExportCsv" Content="CSV" Style="{StaticResource CompactButton}" Margin="0,0,6,0"/>
+              <Button x:Name="btnExportJson" Content="JSON" Style="{StaticResource CompactButton}" Margin="0,0,6,0"/>
+              <Button x:Name="btnExportHtml" Content="HTML" Style="{StaticResource CompactButton}"/>
+            </StackPanel>
+          </Grid>
+          <Grid Grid.Row="1" Margin="0,8,0,0">
+          <DataGrid x:Name="dgScan" AutoGenerateColumns="False" CanUserAddRows="False"
+                    HeadersVisibility="Column" SelectionMode="Extended" SelectionUnit="FullRow"
+                    VerticalScrollBarVisibility="Auto" HorizontalScrollBarVisibility="Disabled"
+                    ScrollViewer.CanContentScroll="True">
+            <DataGrid.Columns>
+              <DataGridCheckBoxColumn Header="Выбор" Binding="{Binding Selected}" Width="64"/>
+              <DataGridTextColumn Header="Категория" Binding="{Binding DisplayCategory}" Width="120"/>
+              <DataGridTextColumn Header="Объект" Binding="{Binding Name}" Width="220"/>
+              <DataGridTextColumn Header="Состояние" Binding="{Binding DisplayState}" Width="140"/>
+              <DataGridTextColumn Header="Подробности" Binding="{Binding DisplayDetails}" Width="230"/>
+            </DataGrid.Columns>
+          </DataGrid>
+          <Border x:Name="scanEmptyPanel" Background="#E6171717" IsHitTestVisible="False" Margin="0,34,0,0">
+            <StackPanel HorizontalAlignment="Center" VerticalAlignment="Center">
+              <TextBlock x:Name="scanEmptyTitle" Text="Сканирование ещё не проводилось." FontSize="15" FontWeight="SemiBold" HorizontalAlignment="Center"/>
+              <TextBlock x:Name="scanEmptyHint" Text="Нажмите «Сканировать» для получения результатов." Style="{StaticResource MutedText}" Margin="0,6,0,0"/>
             </StackPanel>
           </Border>
-
-          <Border Style="{StaticResource Card}">
-            <Grid>
-              <Grid.RowDefinitions>
-                <RowDefinition Height="Auto"/>
-                <RowDefinition Height="260"/>
-              </Grid.RowDefinitions>
-              <Grid.ColumnDefinitions>
-                <ColumnDefinition Width="*"/>
-                <ColumnDefinition Width="Auto"/>
-              </Grid.ColumnDefinitions>
-              <TextBlock Text="Scan Results" Style="{StaticResource SectionTitle}"/>
-              <StackPanel Grid.Column="1" Orientation="Horizontal" Margin="0,0,0,10">
-                <Button x:Name="btnScan" Content="Scan" Style="{StaticResource AccentButton}" Width="90" Margin="0,0,8,0"/>
-                <Button x:Name="btnExportCsv" Content="CSV" Width="70" Margin="0,0,8,0"/>
-                <Button x:Name="btnExportJson" Content="JSON" Width="70" Margin="0,0,8,0"/>
-                <Button x:Name="btnExportHtml" Content="HTML" Width="70"/>
-              </StackPanel>
-
-              <DataGrid x:Name="dgScan" Grid.Row="1" Grid.ColumnSpan="2" AutoGenerateColumns="False" CanUserAddRows="False"
-                        HeadersVisibility="Column" SelectionMode="Extended" SelectionUnit="FullRow">
-                <DataGrid.Columns>
-                  <DataGridCheckBoxColumn Header="Sel" Binding="{Binding Selected}" Width="48"/>
-                  <DataGridTextColumn Header="Category" Binding="{Binding Category}" Width="140"/>
-                  <DataGridTextColumn Header="Name" Binding="{Binding Name}" Width="*"/>
-                  <DataGridTextColumn Header="State" Binding="{Binding State}" Width="140"/>
-                  <DataGridTextColumn Header="Details" Binding="{Binding Details}" Width="260"/>
-                </DataGrid.Columns>
-              </DataGrid>
-            </Grid>
-          </Border>
-
-          <Grid>
-            <Grid.ColumnDefinitions>
-              <ColumnDefinition Width="*"/>
-              <ColumnDefinition Width="*"/>
-            </Grid.ColumnDefinitions>
-            <Border Style="{StaticResource Card}" Margin="0,0,12,0">
-              <Grid>
-                <Grid.RowDefinitions>
-                  <RowDefinition Height="Auto"/>
-                  <RowDefinition Height="120"/>
-                </Grid.RowDefinitions>
-                <TextBlock Text="Activity Log" Style="{StaticResource SectionTitle}"/>
-                <TextBox x:Name="tbConsole" Grid.Row="1" AcceptsReturn="True" VerticalScrollBarVisibility="Auto" TextWrapping="Wrap"
-                         Style="{StaticResource ConsoleTextBox}" IsReadOnly="True"/>
-              </Grid>
-            </Border>
-            <Border Grid.Column="1" Style="{StaticResource Card}">
-              <Grid>
-                <Grid.RowDefinitions>
-                  <RowDefinition Height="Auto"/>
-                  <RowDefinition Height="120"/>
-                </Grid.RowDefinitions>
-                <TextBlock Text="Diagnostics Output" Style="{StaticResource SectionTitle}"/>
-                <TextBox x:Name="tbDiag" Grid.Row="1" AcceptsReturn="True" VerticalScrollBarVisibility="Auto" TextWrapping="Wrap"
-                         Style="{StaticResource ConsoleTextBox}" IsReadOnly="True"/>
-              </Grid>
-            </Border>
           </Grid>
-        </StackPanel>
-      </ScrollViewer>
+        </Grid>
+      </Border>
 
-      <Border Grid.Row="2" Style="{StaticResource Card}" Margin="0,14,0,0" Padding="12">
-        <TextBox x:Name="tbLogView" Height="54" AcceptsReturn="True" VerticalScrollBarVisibility="Auto" TextWrapping="Wrap"
-                 FontFamily="Consolas" FontSize="12"/>
+      <Border Grid.Row="5" Style="{StaticResource Card}" Padding="10" BorderBrush="#2A3A55">
+        <Grid>
+          <Grid.RowDefinitions><RowDefinition Height="Auto"/><RowDefinition Height="*"/></Grid.RowDefinitions>
+          <Grid>
+            <Grid.ColumnDefinitions><ColumnDefinition Width="*"/><ColumnDefinition Width="Auto"/></Grid.ColumnDefinitions>
+            <TextBlock Text="Журналы и диагностика" Style="{StaticResource SectionTitle}"/>
+            <StackPanel Grid.Column="1" Orientation="Horizontal">
+              <Button x:Name="btnClearLog" Content="Очистить журнал" Style="{StaticResource CompactButton}" Margin="0,0,6,0"/>
+              <Button x:Name="btnClearDiag" Content="Очистить диагностику" Style="{StaticResource CompactButton}" Margin="0,0,6,0"/>
+              <Button x:Name="btnCopyDiag" Content="Копировать диагностику" Style="{StaticResource CompactButton}"/>
+            </StackPanel>
+          </Grid>
+          <TabControl x:Name="tabOutput" Grid.Row="1" Margin="0,6,0,0">
+            <TabItem Header="Журнал действий">
+              <TextBox x:Name="tbConsole" AcceptsReturn="True" VerticalScrollBarVisibility="Auto" HorizontalScrollBarVisibility="Auto" TextWrapping="NoWrap" Style="{StaticResource ConsoleTextBox}" IsReadOnly="True"/>
+            </TabItem>
+            <TabItem x:Name="tabDiagnostics" Header="Вывод диагностики">
+              <TextBox x:Name="tbDiag" AcceptsReturn="True" VerticalScrollBarVisibility="Auto" HorizontalScrollBarVisibility="Auto" TextWrapping="NoWrap" Style="{StaticResource ConsoleTextBox}" IsReadOnly="True"/>
+            </TabItem>
+          </TabControl>
+        </Grid>
       </Border>
     </Grid>
 
-    <Border Grid.Column="2" Background="{StaticResource BrushPanel}" BorderBrush="{StaticResource BrushBorder}" BorderThickness="1,0,0,0" Padding="16">
-      <ScrollViewer VerticalScrollBarVisibility="Auto" Padding="0,0,4,0">
-        <StackPanel>
-          <TextBlock Text="Summary" FontSize="20" FontWeight="SemiBold" Margin="0,0,0,12"/>
-
-          <Border Style="{StaticResource Card}" Padding="12" Margin="0,0,0,9">
+    <Border Grid.Column="2" Background="{StaticResource BrushPanel}" BorderBrush="{StaticResource BrushBorder}" BorderThickness="1,0,0,0" Padding="14">
+      <Grid>
+        <Grid.RowDefinitions><RowDefinition Height="Auto"/><RowDefinition Height="*"/><RowDefinition Height="Auto"/></Grid.RowDefinitions>
+        <TextBlock Text="Сводка" FontSize="20" FontWeight="SemiBold" Margin="0,0,0,10"/>
+        <StackPanel Grid.Row="1">
+          <Border Style="{StaticResource SoftCard}"><StackPanel><TextBlock Text="Найденные элементы" Style="{StaticResource MutedText}"/><TextBlock x:Name="lblSummary" Text="Сканирование ещё не запускалось" FontWeight="SemiBold" TextWrapping="Wrap" Margin="0,4,0,0"/></StackPanel></Border>
+          <Border Style="{StaticResource SoftCard}"><StackPanel><TextBlock Text="Защищённые корневые пути" Style="{StaticResource MutedText}"/><TextBlock Text="Реестр и папки защищены" Foreground="{StaticResource BrushSuccess}" FontWeight="SemiBold" Margin="0,4,0,0"/></StackPanel></Border>
+          <Border Style="{StaticResource SoftCard}">
             <StackPanel>
-              <TextBlock Text="Items Found" Style="{StaticResource MutedText}"/>
-              <TextBlock Text="Run Scan" FontSize="20" FontWeight="SemiBold" Margin="0,3,0,0"/>
+              <TextBlock Text="Путь к журналу" FontWeight="SemiBold"/>
+              <TextBox x:Name="tbLogPath" Text="%ProgramData%\CiscoCleanup\cleanup.log" Height="44" Margin="0,7,0,6" Padding="7,5" TextWrapping="Wrap" HorizontalScrollBarVisibility="Disabled" VerticalScrollBarVisibility="Disabled" FontSize="10" ToolTip="%ProgramData%\CiscoCleanup\cleanup.log"/>
+              <Button x:Name="btnOpenLog" Content="Открыть" Style="{StaticResource CompactButton}"/>
             </StackPanel>
           </Border>
-
-          <Border Style="{StaticResource Card}" Padding="12" Margin="0,0,0,9">
+          <Border Style="{StaticResource SoftCard}">
             <StackPanel>
-              <TextBlock Text="Blocked Broad Roots" Style="{StaticResource MutedText}"/>
-              <TextBlock Text="Registry + folders protected" Foreground="{StaticResource BrushSuccess}" FontWeight="SemiBold" Margin="0,3,0,0"/>
-            </StackPanel>
-          </Border>
-
-          <Border Style="{StaticResource Card}" Padding="12" Margin="0,0,0,9">
-            <StackPanel>
-              <TextBlock Text="Backup Path" Style="{StaticResource MutedText}"/>
-              <TextBlock Text="Log path" FontWeight="SemiBold" Margin="0,3,0,5"/>
-              <Grid>
-                <Grid.ColumnDefinitions>
-                  <ColumnDefinition Width="*"/>
-                  <ColumnDefinition Width="Auto"/>
-                </Grid.ColumnDefinitions>
-                <TextBox x:Name="tbLogPath" Text="%ProgramData%\CiscoCleanup\cleanup.log" Height="36" VerticalContentAlignment="Center" HorizontalScrollBarVisibility="Hidden" TextWrapping="NoWrap"/>
-                <Button x:Name="btnOpenLog" Grid.Column="1" Content="Open" Width="58" Height="36" Margin="6,0,0,0"/>
-              </Grid>
-            </StackPanel>
-          </Border>
-
-          <Border Style="{StaticResource Card}" Padding="12" Margin="0,0,0,9">
-            <StackPanel>
-              <TextBlock Text="Report Path" Style="{StaticResource MutedText}"/>
-              <TextBlock Text="HTML report" FontWeight="SemiBold" Margin="0,3,0,5"/>
-              <Grid>
-                <Grid.ColumnDefinitions>
-                  <ColumnDefinition Width="*"/>
-                  <ColumnDefinition Width="Auto"/>
-                </Grid.ColumnDefinitions>
-                <TextBox x:Name="tbHtmlPath" Text="%ProgramData%\CiscoCleanup\report.html" Height="36" VerticalContentAlignment="Center" HorizontalScrollBarVisibility="Hidden" TextWrapping="NoWrap"/>
-                <Button x:Name="btnOpenHtml" Grid.Column="1" Content="Open" Width="58" Height="36" Margin="6,0,0,0"/>
-              </Grid>
-            </StackPanel>
-          </Border>
-
-          <Border Style="{StaticResource Card}" Padding="12" Margin="0,0,0,9">
-            <StackPanel>
-              <TextBlock Text="Current Plan" Style="{StaticResource MutedText}"/>
-              <TextBlock Text="1. Scan" Margin="0,6,0,0"/>
-              <TextBlock Text="2. Dry Run / WhatIf" Margin="0,2,0,0"/>
-              <TextBlock Text="3. Backup" Margin="0,2,0,0"/>
-              <TextBlock Text="4. Cleanup" Margin="0,2,0,0"/>
-              <TextBlock Text="5. Reboot" Margin="0,2,0,0"/>
-              <TextBlock Text="6. Reinstall Cisco Secure Client" Margin="0,2,0,0"/>
+              <TextBlock Text="Путь к HTML-отчёту" FontWeight="SemiBold"/>
+              <TextBox x:Name="tbHtmlPath" Text="%ProgramData%\CiscoCleanup\report.html" Height="44" Margin="0,7,0,6" Padding="7,5" TextWrapping="Wrap" HorizontalScrollBarVisibility="Disabled" VerticalScrollBarVisibility="Disabled" FontSize="10" ToolTip="%ProgramData%\CiscoCleanup\report.html"/>
+              <Button x:Name="btnOpenHtml" Content="Открыть" Style="{StaticResource CompactButton}"/>
             </StackPanel>
           </Border>
         </StackPanel>
-      </ScrollViewer>
+        <Border Grid.Row="2" Style="{StaticResource SoftCard}" Margin="0">
+          <StackPanel>
+            <TextBlock Text="Текущий план" FontWeight="SemiBold" Margin="0,0,0,6"/>
+            <TextBlock Text="Сканирование → Пробный запуск → Резервная копия → Очистка → Перезагрузка" Style="{StaticResource MutedText}"/>
+          </StackPanel>
+        </Border>
+      </Grid>
     </Border>
   </Grid>
 </Window>
@@ -760,15 +752,14 @@ $global:CleanupRoot = Join-Path $env:ProgramData "CiscoCleanup"; New-Item -ItemT
 # ── Логирование ────────────────────────────────────────────────────────────────
 function Ensure-LogPath($LogPath){
   $dir = Split-Path -Path $LogPath -Parent
-  if (-not (Test-Path $dir)) { New-Item -ItemType Directory -Force -Path $dir | Out-Null }
-  if (-not (Test-Path $LogPath)) { New-Item -ItemType File -Force -Path $LogPath | Out-Null }
+  if (-not (Test-Path -LiteralPath $dir -PathType Container)) { New-Item -ItemType Directory -Force -Path $dir | Out-Null }
+  if (-not (Test-Path -LiteralPath $LogPath -PathType Leaf)) { New-Item -ItemType File -Force -Path $LogPath | Out-Null }
 }
 function Write-UILog([string]$Message,[string]$Level="INFO"){
   $ts = (Get-Date).ToString("yyyy-MM-dd HH:mm:ss")
   $line = "[$ts][$Level] $Message"
   if ($controls.tbConsole){ $controls.tbConsole.AppendText($line + [Environment]::NewLine); $controls.tbConsole.ScrollToEnd() }
   $logPath = Resolve-Env $controls.tbLogPath.Text; Ensure-LogPath $logPath; Add-Content -Path $logPath -Value $line
-  if ($controls.tbLogView){ $controls.tbLogView.AppendText($line + [Environment]::NewLine); $controls.tbLogView.ScrollToEnd() }
 }
 function Write-Diag([string]$Message){
   $ts = (Get-Date).ToString("yyyy-MM-dd HH:mm:ss")
@@ -790,7 +781,6 @@ $RegistryKeys = @(
 
 $ProgramFolderNames = @(
   "Cisco AnyConnect Secure Mobility Client",
-  "Cisco AnyConnect",
   "Cisco Secure Client",
   "Cisco Secure Client\VPN",
   "Cisco Secure Client\ISE Posture",
@@ -799,11 +789,29 @@ $ProgramFolderNames = @(
   "Cisco Secure Client\Network Access Manager"
 )
 $ProgramFolders = @(
-  foreach($name in $ProgramFolderNames) {
-    if ($env:ProgramFiles) { Join-Path $env:ProgramFiles $name }
-    if ($ProgramFilesX86) { Join-Path $ProgramFilesX86 $name }
+  $programRoots = @($env:ProgramFiles, $ProgramFilesX86) |
+    Where-Object { -not [string]::IsNullOrWhiteSpace($_) } |
+    Sort-Object -Unique
+
+  foreach($root in $programRoots) {
+    $ciscoRoot = Join-Path $root "Cisco"
+    foreach($name in $ProgramFolderNames) {
+      Join-Path $ciscoRoot $name
+    }
   }
 ) | Where-Object { -not [string]::IsNullOrWhiteSpace($_) } | Sort-Object -Unique
+
+$ProtectedScanFolders = @(
+  if ($env:ProgramFiles) { Join-Path $env:ProgramFiles "Cisco" }
+  if ($ProgramFilesX86) { Join-Path $ProgramFilesX86 "Cisco" }
+  if ($env:ProgramData) { Join-Path $env:ProgramData "Cisco" }
+  if ($env:ProgramData) { Join-Path $env:ProgramData "Cisco Systems" }
+) | Where-Object { -not [string]::IsNullOrWhiteSpace($_) } | Sort-Object -Unique
+
+$UninstallRegistryPaths = @(
+  "HKLM:\Software\Microsoft\Windows\CurrentVersion\Uninstall\*",
+  "HKLM:\Software\WOW6432Node\Microsoft\Windows\CurrentVersion\Uninstall\*"
+)
 
 $BlockedRegistryRoots = @(
   "HKLM:\SOFTWARE\Cisco",
@@ -844,7 +852,7 @@ function Get-UserProfiles {
   $reg = "HKLM:\SOFTWARE\Microsoft\Windows NT\CurrentVersion\ProfileList"
   Get-ChildItem $reg -ErrorAction SilentlyContinue | ForEach-Object {
     $p = (Get-ItemProperty -LiteralPath $_.PSPath -ErrorAction SilentlyContinue).ProfileImagePath
-    if ($p -and (Test-Path $p)) {
+    if ($p -and (Test-Path -LiteralPath $p -PathType Container)) {
       $leaf = Split-Path $p -Leaf
       if ($leaf -in @("Default","Default User","Public","All Users")) { return }
       $out += $p
@@ -856,6 +864,210 @@ function Get-UserProfiles {
 
 # ── Список папок (включая AppData по всем профилям при выборе «Все») ──────────
 # ЗАМЕНА функции Get-TargetFolders
+function Get-CiscoInstallCandidates {
+  param(
+    [string[]]$KnownProgramFolders,
+    [string[]]$ProtectedFolders,
+    [string[]]$UninstallRegistryPaths,
+    [string[]]$ServiceNames,
+    [string[]]$ProcessNames,
+    [bool]$AllUsers
+  )
+
+  $candidateMap = @{}
+  $programCandidates = New-Object System.Collections.Generic.List[Object]
+  $namePatterns = @(
+    "*Cisco AnyConnect*", "*Cisco Secure Client*", "*AnyConnect*", "*Secure Client*",
+    "*VPN*", "*ISE Posture*", "*Diagnostics and Reporting Tool*", "*Umbrella*", "*Network Access Manager*"
+  )
+
+  function Normalize-DiscoveryPath([string]$Path) {
+    if ([string]::IsNullOrWhiteSpace($Path)) { return "" }
+    return ([Environment]::ExpandEnvironmentVariables($Path).Trim().Trim('"').TrimEnd('\')).ToLowerInvariant()
+  }
+
+  function Test-DiscoveryName([string]$Name) {
+    if ([string]::IsNullOrWhiteSpace($Name)) { return $false }
+    foreach ($pattern in $namePatterns) {
+      if ($Name -like $pattern) { return $true }
+    }
+    return $false
+  }
+
+  function Test-ProtectedDiscoveryPath([string]$Path) {
+    $normalized = Normalize-DiscoveryPath $Path
+    foreach ($protectedPath in $ProtectedFolders) {
+      if ($normalized -eq (Normalize-DiscoveryPath $protectedPath)) { return $true }
+    }
+    return $false
+  }
+
+  function Test-RemovableDiscoveryPath([string]$Path) {
+    $normalized = Normalize-DiscoveryPath $Path
+    if ([string]::IsNullOrWhiteSpace($normalized) -or (Test-ProtectedDiscoveryPath $Path)) { return $false }
+    $programDataNormalized = Normalize-DiscoveryPath $env:ProgramData
+    if ($programDataNormalized -and $normalized.StartsWith($programDataNormalized + '\')) { return $false }
+    foreach ($knownPath in $KnownProgramFolders) {
+      if ($normalized -eq (Normalize-DiscoveryPath $knownPath)) { return $true }
+    }
+    foreach ($protectedPath in $ProtectedFolders) {
+      $protectedNormalized = Normalize-DiscoveryPath $protectedPath
+      if ($normalized.StartsWith($protectedNormalized + '\') -and (Test-DiscoveryName ([System.IO.Path]::GetFileName($Path)))) {
+        return $true
+      }
+    }
+    return $false
+  }
+
+  function Get-ExecutablePathFromCommandLine([string]$ImagePath) {
+    if ([string]::IsNullOrWhiteSpace($ImagePath)) { return $null }
+    $expanded = [Environment]::ExpandEnvironmentVariables($ImagePath).Trim()
+    if ($expanded -match '^\s*"([^"]+?\.exe)"') { return $matches[1] }
+    if ($expanded -match '^\s*([^\r\n]+?\.exe)(?:\s|$)') { return $matches[1].Trim() }
+    return $expanded.Trim('"')
+  }
+
+  function Add-FolderCandidate {
+    param(
+      [string]$Path,
+      [string]$Source,
+      [string]$Confidence = "Medium",
+      [string]$ExtraDetails = "",
+      [bool]$IncludeMissing = $false,
+      [bool]$ForceProtected = $false,
+      [Nullable[bool]]$ForceRemovable = $null
+    )
+
+    if ([string]::IsNullOrWhiteSpace($Path)) { return }
+    $expandedPath = [Environment]::ExpandEnvironmentVariables($Path).Trim().Trim('"').TrimEnd('\')
+    if ([string]::IsNullOrWhiteSpace($expandedPath)) { return }
+    $exists = Test-Path -LiteralPath $expandedPath -PathType Container
+    if (-not $exists -and -not $IncludeMissing) { return }
+
+    $isProtected = $ForceProtected -or (Test-ProtectedDiscoveryPath $expandedPath)
+    $isRemovable = if ($null -ne $ForceRemovable) { [bool]$ForceRemovable } else { Test-RemovableDiscoveryPath $expandedPath }
+    if ($isProtected) { $isRemovable = $false }
+
+    $key = "folder|" + (Normalize-DiscoveryPath $expandedPath)
+    if (-not $candidateMap.ContainsKey($key)) {
+      $candidateMap[$key] = [PSCustomObject]@{
+        Category = $(if ($isProtected) { "Protected Folder" } else { "Folder" })
+        Name = $expandedPath
+        State = $(if ($isProtected -and $exists) { "Protected" } elseif ($exists) { "Exists" } else { "Not found" })
+        DetailsList = New-Object System.Collections.Generic.List[string]
+        Path = $expandedPath
+        Sources = New-Object System.Collections.Generic.List[string]
+        Confidence = $Confidence
+        IsProtected = [bool]$isProtected
+        IsRemovable = [bool]$isRemovable
+      }
+    }
+
+    $candidate = $candidateMap[$key]
+    if ($candidate.Sources -notcontains $Source) { $candidate.Sources.Add($Source) }
+    if ($ExtraDetails -and $candidate.DetailsList -notcontains $ExtraDetails) { $candidate.DetailsList.Add($ExtraDetails) }
+    if ($candidate.Sources.Count -gt 1 -or $Confidence -eq "High") { $candidate.Confidence = "High" }
+    if ($isProtected) {
+      $candidate.Category = "Protected Folder"
+      $candidate.State = $(if ($exists) { "Protected" } else { "Not found" })
+      $candidate.IsProtected = $true
+      $candidate.IsRemovable = $false
+    } elseif ($isRemovable) {
+      $candidate.IsRemovable = $true
+    }
+  }
+
+  foreach ($knownPath in $KnownProgramFolders) {
+    Add-FolderCandidate -Path $knownPath -Source "KnownPath" -Confidence "High" -IncludeMissing $true -ForceRemovable $true
+  }
+
+  foreach ($root in $ProtectedFolders) {
+    if (-not (Test-Path -LiteralPath $root -PathType Container)) { continue }
+    Add-FolderCandidate -Path $root -Source "ProtectedRoot" -Confidence "High" -ForceProtected $true `
+      -ExtraDetails "ManualOnly; HighRisk; корневой путь исключён из автоматического удаления"
+    Get-ChildItem -LiteralPath $root -Directory -ErrorAction SilentlyContinue | ForEach-Object {
+      $programDataRoot = Normalize-DiscoveryPath $env:ProgramData
+      $isProgramData = $programDataRoot -and (Normalize-DiscoveryPath $root).StartsWith($programDataRoot)
+      if ((Test-DiscoveryName $_.Name) -or $isProgramData) {
+        Add-FolderCandidate -Path $_.FullName -Source $(if ($isProgramData) { "ProgramDataChild" } else { "ProgramFilesRoot" }) `
+          -Confidence "Medium" -ForceRemovable (-not $isProgramData) `
+          -ExtraDetails $(if ($isProgramData) { "ManualOnly; дочерняя папка ProgramData" } else { "Обнаружена в корне Cisco" })
+      }
+    }
+  }
+
+  foreach ($uninstallPath in $UninstallRegistryPaths) {
+    Get-ItemProperty -Path $uninstallPath -ErrorAction SilentlyContinue |
+      Where-Object {
+        $_.DisplayName -and ($_.DisplayName -like "*Cisco*" -or $_.DisplayName -like "*AnyConnect*" -or $_.DisplayName -like "*Secure Client*")
+      } |
+      ForEach-Object {
+        $details = New-Object System.Collections.Generic.List[string]
+        if ($_.DisplayVersion) { $details.Add(("Версия: {0}" -f $_.DisplayVersion)) }
+        if ($_.Publisher) { $details.Add(("Издатель: {0}" -f $_.Publisher)) }
+        if ($_.InstallLocation) { $details.Add(("Путь: {0}" -f $_.InstallLocation)) }
+        if ($_.UninstallString) { $details.Add(("Удаление: {0}" -f $_.UninstallString)) }
+        $programCandidates.Add([PSCustomObject]@{
+          Category = "Installed Program"; Name = [string]$_.DisplayName; State = "Installed"
+          Details = ($details -join "; "); Path = [string]$_.InstallLocation; Source = "UninstallRegistry"
+          Confidence = "High"; IsProtected = $true; IsRemovable = $false; RegistryPath = [string]$_.PSPath
+        })
+        if ($_.InstallLocation) {
+          Add-FolderCandidate -Path ([string]$_.InstallLocation) -Source "UninstallInstallLocation" -Confidence "High" `
+            -ExtraDetails ("Программа: {0}" -f $_.DisplayName)
+        }
+      }
+  }
+
+  foreach ($serviceName in $ServiceNames) {
+    $serviceData = Get-ItemProperty -LiteralPath "HKLM:\SYSTEM\CurrentControlSet\Services\$serviceName" -ErrorAction SilentlyContinue
+    $executablePath = Get-ExecutablePathFromCommandLine ([string]$serviceData.ImagePath)
+    if ($executablePath) {
+      Add-FolderCandidate -Path ([System.IO.Path]::GetDirectoryName($executablePath)) -Source "ServiceImagePath" -Confidence "High" `
+        -ExtraDetails ("Служба {0}; ImagePath: {1}" -f $serviceName, $serviceData.ImagePath)
+    }
+  }
+
+  foreach ($processPattern in (@($ProcessNames + @("cisco*")) | Sort-Object -Unique)) {
+    Get-Process -Name $processPattern -ErrorAction SilentlyContinue | ForEach-Object {
+      $ProcessPath = $null
+      try { $ProcessPath = [string]$_.Path } catch {}
+      if ($ProcessPath) {
+        Add-FolderCandidate -Path ([System.IO.Path]::GetDirectoryName($ProcessPath)) -Source "ProcessPath" -Confidence "High" `
+          -ExtraDetails ("Процесс {0}; ProcessPath: {1}" -f $_.ProcessName, $ProcessPath)
+      }
+    }
+  }
+
+  $appDataPaths = New-Object System.Collections.Generic.List[string]
+  if ($AllUsers) {
+    foreach ($profile in @(Get-UserProfiles)) {
+      if (-not $profile) { continue }
+      $appDataPaths.Add([System.IO.Path]::Combine([string]$profile, "AppData", "Roaming", "Cisco"))
+      $appDataPaths.Add([System.IO.Path]::Combine([string]$profile, "AppData", "Local", "Cisco"))
+    }
+  } else {
+    if ($env:APPDATA) { $appDataPaths.Add((Join-Path $env:APPDATA "Cisco")) }
+    if ($env:LOCALAPPDATA) { $appDataPaths.Add((Join-Path $env:LOCALAPPDATA "Cisco")) }
+  }
+  foreach ($appDataPath in ($appDataPaths | Sort-Object -Unique)) {
+    Add-FolderCandidate -Path $appDataPath -Source "AppData" -Confidence "Medium" -IncludeMissing $true -ForceRemovable $true
+  }
+
+  $result = New-Object System.Collections.Generic.List[Object]
+  foreach ($candidate in $candidateMap.Values) {
+    $sources = @($candidate.Sources | Sort-Object -Unique)
+    $details = @($candidate.DetailsList) + @("Sources: $($sources -join ', ')")
+    $result.Add([PSCustomObject]@{
+      Category = $candidate.Category; Name = $candidate.Name; State = $candidate.State
+      Details = ($details -join "; "); Path = $candidate.Path; Source = ($sources -join ", ")
+      Confidence = $candidate.Confidence; IsProtected = [bool]$candidate.IsProtected; IsRemovable = [bool]$candidate.IsRemovable
+    })
+  }
+  foreach ($program in ($programCandidates | Sort-Object Name, RegistryPath -Unique)) { $result.Add($program) }
+  return $result.ToArray()
+}
+
 function Get-TargetFolders {
   $folders = [System.Collections.Generic.List[string]]::new()
 
@@ -907,40 +1119,341 @@ function Invoke-PingFirstBit {
 }
 
 # ── SCAN ──────────────────────────────────────────────────────────────────────
-function Do-Scan {
-  Update-Progress 0
+if (-not ("ScanBackgroundWorkerHost" -as [type])) {
+  Add-Type -TypeDefinition @'
+using System;
+using System.Collections;
+using System.ComponentModel;
+using System.Linq;
+using System.Management.Automation;
+
+public static class ScanBackgroundWorkerHost
+{
+    public static void Run(object sender, DoWorkEventArgs e)
+    {
+        IDictionary input = (IDictionary)e.Argument;
+        using (PowerShell powerShell = PowerShell.Create())
+        {
+            powerShell
+                .AddScript((string)input["Script"])
+                .AddParameter("Services", input["Services"])
+                .AddParameter("Processes", input["Processes"])
+                .AddParameter("RegistryKeys", input["RegistryKeys"])
+                .AddParameter("ProgramFolders", input["ProgramFolders"])
+                .AddParameter("ProtectedFolders", input["ProtectedFolders"])
+                .AddParameter("UninstallRegistryPaths", input["UninstallRegistryPaths"])
+                .AddParameter("AllUsers", input["AllUsers"]);
+
+            var output = powerShell.Invoke();
+            e.Result = output.ToArray();
+        }
+    }
+}
+'@
+}
+
+function Get-ScanItems {
+  param(
+    [string[]]$Services,
+    [string[]]$Processes,
+    [string[]]$RegistryKeys,
+    [string[]]$ProgramFolders,
+    [string[]]$ProtectedFolders,
+    [string[]]$UninstallRegistryPaths,
+    [bool]$AllUsers
+  )
+
   $raw = New-Object System.Collections.Generic.List[Object]
 
   foreach ($s in $Services) {
     $srv = Get-Service -Name $s -ErrorAction SilentlyContinue
-    if ($srv) { $raw.Add([PSCustomObject]@{Selected=$false;Category="Service";Name=$s;State=$srv.Status;Details="StartupType=$($srv.StartType)"}) }
-    else { $raw.Add([PSCustomObject]@{Selected=$false;Category="Service";Name=$s;State="Not found";Details=""}) }
+    if ($srv) { $raw.Add([PSCustomObject]@{Selected=$false;Category="Service";Name=$s;State=$srv.Status;Details="StartupType=$($srv.StartType)";Path="";Source="Service";Confidence="High";IsProtected=$false;IsRemovable=$true}) }
+    else { $raw.Add([PSCustomObject]@{Selected=$false;Category="Service";Name=$s;State="Not found";Details="";Path="";Source="Service";Confidence="Medium";IsProtected=$false;IsRemovable=$true}) }
   }
-  Update-Progress 20
 
   foreach ($p in $Processes) {
     $procs = Get-Process -Name $p -ErrorAction SilentlyContinue
-    if ($procs) { $raw.Add([PSCustomObject]@{Selected=$false;Category="Process";Name=$p;State="Running x$($procs.Count)";Details=($procs|%{"PID="+$_.Id})-join ", "}) }
-    else { $raw.Add([PSCustomObject]@{Selected=$false;Category="Process";Name=$p;State="Not running";Details=""}) }
+    if ($procs) { $raw.Add([PSCustomObject]@{Selected=$false;Category="Process";Name=$p;State="Running x$($procs.Count)";Details=($procs|%{"PID="+$_.Id})-join ", ";Path="";Source="Process";Confidence="High";IsProtected=$false;IsRemovable=$true}) }
+    else { $raw.Add([PSCustomObject]@{Selected=$false;Category="Process";Name=$p;State="Not running";Details="";Path="";Source="Process";Confidence="Medium";IsProtected=$false;IsRemovable=$true}) }
   }
-  Update-Progress 40
 
-  foreach ($f in (Get-TargetFolders)) {
-    if (Test-Path $f) { $raw.Add([PSCustomObject]@{Selected=$false;Category="Folder";Name=$f;State="Exists";Details=""}) }
-    else { $raw.Add([PSCustomObject]@{Selected=$false;Category="Folder";Name=$f;State="Not found";Details=""}) }
+  foreach ($candidate in @(Get-CiscoInstallCandidates `
+    -KnownProgramFolders $ProgramFolders `
+    -ProtectedFolders $ProtectedFolders `
+    -UninstallRegistryPaths $UninstallRegistryPaths `
+    -ServiceNames $Services `
+    -ProcessNames $Processes `
+    -AllUsers $AllUsers)) {
+    $candidate | Add-Member -NotePropertyName Selected -NotePropertyValue $false -Force
+    $raw.Add($candidate)
   }
-  Update-Progress 70
 
   foreach ($rk in $RegistryKeys) {
-    if (Test-Path $rk) { $raw.Add([PSCustomObject]@{Selected=$false;Category="Registry";Name=$rk;State="Exists";Details=""}) }
-    else { $raw.Add([PSCustomObject]@{Selected=$false;Category="Registry";Name=$rk;State="Not found";Details=""}) }
+    if (Test-Path $rk) { $raw.Add([PSCustomObject]@{Selected=$false;Category="Registry";Name=$rk;State="Exists";Details="";Path=$rk;Source="ServiceRegistry";Confidence="High";IsProtected=$false;IsRemovable=$true}) }
+    else { $raw.Add([PSCustomObject]@{Selected=$false;Category="Registry";Name=$rk;State="Not found";Details="";Path=$rk;Source="ServiceRegistry";Confidence="Medium";IsProtected=$false;IsRemovable=$true}) }
   }
-  Update-Progress 100
 
-  $items = if ($controls.cbOnlyFound.IsChecked) { $raw | ? { $_.State -notin @("Not found","Not running") } } else { $raw }
+  return $raw.ToArray()
+}
+
+function Apply-ScanItems {
+  param(
+    [object[]]$RawItems,
+    [bool]$OnlyFound
+  )
+
+  $raw = @($RawItems)
+  foreach ($item in $raw) {
+    $displayCategory = switch ([string]$item.Category) {
+      "Service" { "Служба" }
+      "Process" { "Процесс" }
+      "Folder" { "Папка" }
+      "Protected Folder" { "Защищённая папка" }
+      "Registry" { "Реестр" }
+      "Installed Program" { "Установленная программа" }
+      default { [string]$item.Category }
+    }
+
+    $state = [string]$item.State
+    $displayState = switch -Regex ($state) {
+      "^Not found$" { "Не найдено"; break }
+      "^Not running$" { "Не запущено"; break }
+      "^Running x(\d+)$" { "Запущено: $($Matches[1])"; break }
+      "^Running$" { "Запущено"; break }
+      "^Stopped$" { "Остановлено"; break }
+      "^Protected$" { "Защищено"; break }
+      "^Ready$" { "Готово"; break }
+      "^Exists$" { "Найдено"; break }
+      "^Found$" { "Найдено"; break }
+      "^Installed$" { "Установлено"; break }
+      "^Error$" { "Ошибка"; break }
+      "^Check complete$" { "Проверка выполнена"; break }
+      default { $state }
+    }
+
+    $displayDetails = ([string]$item.Details) -replace "^StartupType=", "Тип запуска: "
+    $item | Add-Member -NotePropertyName DisplayCategory -NotePropertyValue $displayCategory -Force
+    $item | Add-Member -NotePropertyName DisplayState -NotePropertyValue $displayState -Force
+    $item | Add-Member -NotePropertyName DisplayDetails -NotePropertyValue $displayDetails -Force
+  }
+
+  $items = if ($OnlyFound) { @($raw | Where-Object { $_.State -notin @("Not found","Not running") }) } else { $raw }
+  $global:CurrentScanDisplayItems = @($items)
+
+  $foundItems = @($raw | Where-Object { $_.State -notin @("Not found","Not running") })
+  $categoryCounts = @{
+    Services = @($raw | Where-Object { $_.Category -eq "Service" })
+    Processes = @($raw | Where-Object { $_.Category -eq "Process" })
+    Folders = @($raw | Where-Object {
+      $_.Category -eq "Folder" -and
+      $_.Source -notlike "*AppData*" -and
+      -not [bool]$_.IsProtected
+    })
+    Registry = @($raw | Where-Object { $_.Category -eq "Registry" })
+    AppData = @($raw | Where-Object { $_.Source -like "*AppData*" })
+    Programs = @($raw | Where-Object { $_.Category -eq "Installed Program" })
+    Protected = @($raw | Where-Object { $_.Category -eq "Protected Folder" -or [bool]$_.IsProtected })
+  }
+
+  $controls.lblServicesCount.Text = "$(@($foundItems | Where-Object { $_.Category -eq 'Service' }).Count) из $($categoryCounts.Services.Count)"
+  $controls.lblProcessesCount.Text = "$(@($foundItems | Where-Object { $_.Category -eq 'Process' }).Count) из $($categoryCounts.Processes.Count)"
+  $controls.lblFoldersCount.Text = "$(@($foundItems | Where-Object {
+    $_.Category -eq 'Folder' -and $_.Source -notlike '*AppData*' -and -not [bool]$_.IsProtected
+  }).Count) из $($categoryCounts.Folders.Count)"
+  $controls.lblRegistryCount.Text = "$(@($foundItems | Where-Object { $_.Category -eq 'Registry' }).Count) из $($categoryCounts.Registry.Count)"
+  $controls.lblAppDataCount.Text = "$(@($foundItems | Where-Object { $_.Source -like '*AppData*' }).Count) из $($categoryCounts.AppData.Count)"
+  $controls.lblProgramsCount.Text = "$(@($foundItems | Where-Object { $_.Category -eq 'Installed Program' }).Count) из $($categoryCounts.Programs.Count)"
+  $controls.lblProtectedCount.Text = "$(@($foundItems | Where-Object {
+    $_.Category -eq 'Protected Folder' -or [bool]$_.IsProtected
+  }).Count) из $($categoryCounts.Protected.Count)"
+  $controls.lblTotalCount.Text = "$($raw.Count) элементов"
+
+  Apply-ScanSearch
+}
+
+function Apply-ScanSearch {
+  $items = @($global:CurrentScanDisplayItems)
+  $query = if ($controls.tbScanSearch) { ([string]$controls.tbScanSearch.Text).Trim() } else { "" }
+  if ($query) {
+    $items = @($items | Where-Object {
+      ([string]$_.DisplayCategory).IndexOf($query, [System.StringComparison]::OrdinalIgnoreCase) -ge 0 -or
+      ([string]$_.Name).IndexOf($query, [System.StringComparison]::OrdinalIgnoreCase) -ge 0 -or
+      ([string]$_.DisplayState).IndexOf($query, [System.StringComparison]::OrdinalIgnoreCase) -ge 0 -or
+      ([string]$_.DisplayDetails).IndexOf($query, [System.StringComparison]::OrdinalIgnoreCase) -ge 0
+    })
+  }
+
   $controls.dgScan.ItemsSource = $items
-  $controls.lblSummary.Text = "Показано: $($items.Count) (всего: $($raw.Count))"
+  $rawCount = @($global:LastScanRawItems).Count
+  $controls.lblSummary.Text = "Показано: $($items.Count) (всего: $rawCount)"
+  if ($items.Count -eq 0) {
+    $controls.scanEmptyPanel.Visibility = "Visible"
+    if ($null -eq $global:LastScanRawItems) {
+      $controls.scanEmptyTitle.Text = "Сканирование ещё не проводилось."
+      $controls.scanEmptyHint.Text = "Нажмите «Сканировать» для получения результатов."
+    } else {
+      $controls.scanEmptyTitle.Text = "Совпадений не найдено."
+      $controls.scanEmptyHint.Text = "Измените строку поиска или фильтр результатов."
+    }
+  } else {
+    $controls.scanEmptyPanel.Visibility = "Collapsed"
+  }
+}
+
+function Set-ScanUiBusy([bool]$Busy) {
+  $controls.btnScan.IsEnabled = -not $Busy
+  $controls.btnScanResults.IsEnabled = -not $Busy
+  $controls.btnRun.IsEnabled = -not $Busy
+  $controls.btnAnalyze.IsEnabled = -not $Busy
+  $controls.pb.IsIndeterminate = $Busy
+  $controls.pb.Visibility = if ($Busy) { "Visible" } else { "Collapsed" }
+  if (-not $Busy) {
+    $controls.pb.Value = 0
+  }
+}
+
+function Get-ScanErrorMessage($ErrorObject) {
+  if ($null -eq $ErrorObject) { return "Неизвестная ошибка" }
+
+  try {
+    if ($ErrorObject.Exception -and -not [string]::IsNullOrWhiteSpace([string]$ErrorObject.Exception.Message)) {
+      return [string]$ErrorObject.Exception.Message
+    }
+  } catch {}
+
+  try {
+    if (-not [string]::IsNullOrWhiteSpace([string]$ErrorObject.Message)) {
+      return [string]$ErrorObject.Message
+    }
+  } catch {}
+
+  $message = [string]$ErrorObject
+  if ([string]::IsNullOrWhiteSpace($message)) { return "Неизвестная ошибка" }
+  return $message
+}
+
+function Do-Scan {
+  $raw = @(Get-ScanItems `
+    -Services @($Services) `
+    -Processes @($Processes) `
+    -RegistryKeys @($RegistryKeys) `
+    -ProgramFolders @($ProgramFolders) `
+    -ProtectedFolders @($ProtectedScanFolders) `
+    -UninstallRegistryPaths @($UninstallRegistryPaths) `
+    -AllUsers ([bool]$controls.rbAll.IsChecked))
+
+  $global:LastScanRawItems = $raw
+  Apply-ScanItems -RawItems $raw -OnlyFound ([bool]$controls.cbOnlyFound.IsChecked)
   return ,$raw
+}
+
+function Start-ScanAsync {
+  if ($global:ScanAsyncTask) {
+    Write-UILog "Сканирование уже выполняется." "WARN"
+    return
+  }
+
+  $controls.tbConsole.Clear()
+  Set-ScanUiBusy $true
+  Write-UILog "Сканирование запущено..."
+
+  $getUserProfilesDefinition = (Get-Command Get-UserProfiles -CommandType Function).Definition
+  $getCiscoInstallCandidatesDefinition = (Get-Command Get-CiscoInstallCandidates -CommandType Function).Definition
+  $getScanItemsDefinition = (Get-Command Get-ScanItems -CommandType Function).Definition
+  $scanScript = @"
+param(
+  [string[]]`$Services,
+  [string[]]`$Processes,
+  [string[]]`$RegistryKeys,
+  [string[]]`$ProgramFolders,
+  [string[]]`$ProtectedFolders,
+  [string[]]`$UninstallRegistryPaths,
+  [bool]`$AllUsers
+)
+function Get-UserProfiles {
+$getUserProfilesDefinition
+}
+function Get-CiscoInstallCandidates {
+$getCiscoInstallCandidatesDefinition
+}
+function Get-ScanItems {
+$getScanItemsDefinition
+}
+Get-ScanItems -Services `$Services -Processes `$Processes -RegistryKeys `$RegistryKeys -ProgramFolders `$ProgramFolders -ProtectedFolders `$ProtectedFolders -UninstallRegistryPaths `$UninstallRegistryPaths -AllUsers `$AllUsers
+"@
+  $scanInput = @{
+    Script = $scanScript
+    Services = @($Services)
+    Processes = @($Processes)
+    RegistryKeys = @($RegistryKeys)
+    ProgramFolders = @($ProgramFolders)
+    ProtectedFolders = @($ProtectedScanFolders)
+    UninstallRegistryPaths = @($UninstallRegistryPaths)
+    AllUsers = [bool]$controls.rbAll.IsChecked
+  }
+  $worker = New-Object System.ComponentModel.BackgroundWorker
+  $timer = New-Object System.Windows.Threading.DispatcherTimer
+  $timer.Interval = [TimeSpan]::FromSeconds(120)
+  $scanState = [PSCustomObject]@{
+    Worker = $worker
+    Timer = $timer
+    Stopwatch = [System.Diagnostics.Stopwatch]::StartNew()
+    TimedOut = $false
+  }
+  $global:ScanAsyncTask = $scanState
+
+  $doWorkMethod = [ScanBackgroundWorkerHost].GetMethod("Run")
+  $doWorkHandler = [System.Delegate]::CreateDelegate([System.ComponentModel.DoWorkEventHandler], $doWorkMethod)
+  $worker.add_DoWork($doWorkHandler)
+
+  $completedHandler = {
+    param($sender, $e)
+    $scanState.Timer.Stop()
+    $scanState.Stopwatch.Stop()
+
+    if ($scanState.TimedOut) {
+      return
+    }
+
+    Set-ScanUiBusy $false
+    $global:ScanAsyncTask = $null
+    $seconds = $scanState.Stopwatch.Elapsed.TotalSeconds.ToString("0.0")
+
+    if ($e.Error) {
+      $errorMessage = Get-ScanErrorMessage $e.Error
+      Write-UILog ("Ошибка сканирования через {0} сек.: {1}" -f $seconds, $errorMessage) "ERROR"
+      return
+    }
+
+    $global:LastScanRawItems = @($e.Result)
+    Apply-ScanItems -RawItems $global:LastScanRawItems -OnlyFound ([bool]$controls.cbOnlyFound.IsChecked)
+    Write-UILog ("Сканирование завершено за {0} сек. Найдено элементов: {1}" -f $seconds, $global:LastScanRawItems.Count)
+  }.GetNewClosure()
+  $worker.add_RunWorkerCompleted($completedHandler)
+
+  $timeoutHandler = {
+    $scanState.Timer.Stop()
+    if ($scanState.TimedOut) { return }
+
+    $scanState.TimedOut = $true
+    $scanState.Stopwatch.Stop()
+    Set-ScanUiBusy $false
+    $global:ScanAsyncTask = $null
+    Write-UILog "Сканирование прервано по тайм-ауту через 120 секунд." "ERROR"
+  }.GetNewClosure()
+  $timer.add_Tick($timeoutHandler)
+
+  try {
+    $timer.Start()
+    $worker.RunWorkerAsync($scanInput)
+  } catch {
+    $timer.Stop()
+    $scanState.Stopwatch.Stop()
+    Set-ScanUiBusy $false
+    $global:ScanAsyncTask = $null
+    $errorMessage = Get-ScanErrorMessage $_
+    Write-UILog ("Ошибка сканирования через {0} сек.: {1}" -f $scanState.Stopwatch.Elapsed.TotalSeconds.ToString("0.0"), $errorMessage) "ERROR"
+  }
 }
 
 # ── Очистка/удаление (фиксы catch: без интерполяции $_) ───────────────────────
@@ -989,7 +1502,7 @@ function Remove-CiscoServices([bool]$WhatIf,$Selection){
 
 function Backup-FolderSafe([string]$SourcePath,[string]$OutputZipPath){
   try{
-    if (-not (Test-Path $SourcePath)){
+    if (-not (Test-Path -LiteralPath $SourcePath -PathType Container)){
       Write-UILog ("Backup folder skipped, source not found: {0}" -f $SourcePath) "WARN"
       return $false
     }
@@ -1002,7 +1515,7 @@ function Backup-FolderSafe([string]$SourcePath,[string]$OutputZipPath){
     Add-Type -AssemblyName 'System.IO.Compression.FileSystem' -ErrorAction Stop
 
     $targetZip = $OutputZipPath
-    if (Test-Path $targetZip){
+    if (Test-Path -LiteralPath $targetZip){
       $baseName = [System.IO.Path]::GetFileNameWithoutExtension($OutputZipPath)
       $extension = [System.IO.Path]::GetExtension($OutputZipPath)
       $parent = [System.IO.Path]::GetDirectoryName($OutputZipPath)
@@ -1010,11 +1523,11 @@ function Backup-FolderSafe([string]$SourcePath,[string]$OutputZipPath){
       do {
         $targetZip = Join-Path $parent ("{0}_{1}{2}" -f $baseName,$i,$extension)
         $i++
-      } while (Test-Path $targetZip)
+      } while (Test-Path -LiteralPath $targetZip)
     }
 
     [System.IO.Compression.ZipFile]::CreateFromDirectory($SourcePath,$targetZip)
-    if (-not (Test-Path $targetZip)){
+    if (-not (Test-Path -LiteralPath $targetZip)){
       Write-UILog ("Backup folder failed for {0}: zip was not created: {1}" -f $SourcePath,$targetZip) "ERROR"
       return $false
     }
@@ -1028,13 +1541,19 @@ function Backup-FolderSafe([string]$SourcePath,[string]$OutputZipPath){
 }
 
 function Remove-CiscoFolders([bool]$WhatIf,[bool]$Backup,[bool]$Force,$Selection){
-  $targets = if ($Selection){ $Selection | ? {$_.Category -eq "Folder"} | % { $_.Name } } else { Get-TargetFolders }
+  $targets = if ($Selection){
+    $Selection |
+      Where-Object { $_.Category -eq "Folder" -and -not [bool]$_.IsProtected -and [bool]$_.IsRemovable } |
+      ForEach-Object { $_.Path }
+  } else {
+    Get-TargetFolders
+  }
   foreach($path in $targets){
     if (Test-IsBlockedFolderRoot $path){
       Write-UILog ("BLOCKED safety: broad Cisco folder will not be removed: {0}" -f $path) "WARN"
       continue
     }
-    if (Test-Path $path){
+    if (Test-Path -LiteralPath $path -PathType Container){
       if ($WhatIf){ Write-UILog ("WHATIF: remove dir {0}" -f $path) }
       else{
         if ($Backup){
@@ -1046,14 +1565,14 @@ function Remove-CiscoFolders([bool]$WhatIf,[bool]$Backup,[bool]$Force,$Selection
         }
 
         try{
-          Remove-Item -Path $path -Recurse -Force -ErrorAction Stop
+          Remove-Item -LiteralPath $path -Recurse -Force -ErrorAction Stop
           Write-UILog ("Removed dir {0}" -f $path)
         } catch {
           $err = $_.Exception.Message
           if ($Force){
             try{
-              Get-ChildItem -Path $path -Recurse -Force -ErrorAction SilentlyContinue | % { $_.Attributes='Normal' }
-              Remove-Item -Path $path -Recurse -Force -ErrorAction Stop
+              Get-ChildItem -LiteralPath $path -Recurse -Force -ErrorAction SilentlyContinue | % { $_.Attributes='Normal' }
+              Remove-Item -LiteralPath $path -Recurse -Force -ErrorAction Stop
               Write-UILog ("Removed dir (retry) {0}" -f $path)
             } catch {
               $err2 = $_.Exception.Message
@@ -1107,7 +1626,7 @@ function Export-RegistryKeySafe([string]$RegistryPath,[string]$OutputPath){
       return $false
     }
 
-    if (-not (Test-Path $OutputPath)){
+    if (-not (Test-Path -LiteralPath $OutputPath -PathType Leaf)){
       Write-UILog ("Backup reg failed for {0}: output file was not created: {1}" -f $RegistryPath, $OutputPath) "ERROR"
       return $false
     }
@@ -1279,7 +1798,7 @@ function Test-VpnDiagnostics([string]$TargetHost = "vpn.1cbit.ru"){
 
   # GoodbyeDPI / WinDivert
   try{
-    $gf = @(); foreach($d in $GoodbyeFiles){ if (Test-Path $d){ $gf += $d } }
+    $gf = @(); foreach($d in $GoodbyeFiles){ if (Test-Path -LiteralPath $d -PathType Container){ $gf += $d } }
     if ($gf){ Write-Diag ("[!] Найдены каталоги GoodbyeDPI: {0}" -f ($gf -join ", ")) }
     $tasks = @(); foreach($t in $GoodbyeTasks){ $tasks += (Get-ScheduledTask -ErrorAction SilentlyContinue | ? { $_.TaskName -like "*$t*" -or $_.TaskPath -like "*$t*" }) }
     if ($tasks){ Write-Diag ("[!] Найдены задачи планировщика GoodbyeDPI: {0}" -f (($tasks | Select -Expand TaskName -Unique) -join ", ")) }
@@ -1293,7 +1812,9 @@ function Test-VpnDiagnostics([string]$TargetHost = "vpn.1cbit.ru"){
   else { Write-Diag ("=== Итог: проблемы: " + ($errors -join ", ")) }
 }
 
-function Disable-SuspiciousAdapters {
+function Show-SuspiciousAdapters {
+  $controls.tbDiag.Clear()
+  Write-Diag "=== Подозрительные сетевые адаптеры ==="
   $ifaces = Get-NetAdapter -Physical:$false -ErrorAction SilentlyContinue
   $targets = @()
   foreach($i in $ifaces){
@@ -1301,14 +1822,29 @@ function Disable-SuspiciousAdapters {
       if ($i.Name -like "*$p*" -or $i.InterfaceDescription -like "*$p*"){ $targets += $i; break }
     }
   }
-  if (-not $targets.Count){ Write-Diag "Подозрительных адаптеров не найдено."; return }
-  $msg = "Будут отключены адаптеры:`n" + ($targets | % { "• " + $_.Name } | Out-String)
-  $r=[System.Windows.MessageBox]::Show($msg,"Отключить адаптеры?","YesNo","Warning")
-  if($r -ne "Yes"){ return }
-  foreach($n in $targets){
-    try { Disable-NetAdapter -Name $n.Name -Confirm:$false -ErrorAction Stop; Write-Diag ("Отключен адаптер: {0}" -f $n.Name) }
-    catch { Write-Diag ("Не удалось отключить {0}: {1}" -f $n.Name, $_.Exception.Message) }
+  if (-not $targets.Count){
+    Write-Diag "Подозрительных адаптеров не найдено."
+    return
   }
+
+  foreach($adapter in ($targets | Sort-Object Name -Unique)){
+    Write-Diag ("Адаптер: {0}; Статус: {1}; Описание: {2}; MAC: {3}" -f `
+      $adapter.Name, $adapter.Status, $adapter.InterfaceDescription, $adapter.MacAddress)
+  }
+  Write-Diag ("Итого найдено: {0}. Изменения в систему не вносились." -f @($targets | Sort-Object Name -Unique).Count)
+}
+
+function Update-ScanColumnWidths {
+  if (-not $controls.dgScan -or $controls.dgScan.Columns.Count -lt 5) { return }
+
+  $gridWidth = [double]$controls.dgScan.ActualWidth
+  if ($gridWidth -lt 600) { return }
+
+  $availableWidth = [Math]::Max(360, $gridWidth - 348)
+  $objectWidth = [Math]::Max(180, [Math]::Floor($availableWidth * 0.42))
+  $detailsWidth = [Math]::Max(180, $availableWidth - $objectWidth)
+  $controls.dgScan.Columns[2].Width = New-Object -TypeName System.Windows.Controls.DataGridLength -ArgumentList ([double]$objectWidth)
+  $controls.dgScan.Columns[4].Width = New-Object -TypeName System.Windows.Controls.DataGridLength -ArgumentList ([double]$detailsWidth)
 }
 
 function Stop-ConflictTools {
@@ -1383,14 +1919,34 @@ function Run-Flow([bool]$full,[bool]$svc,[bool]$folders,[bool]$reg,[bool]$backup
 }
 
 # ── Привязка UI ────────────────────────────────────────────────────────────────
-$controls.btnScan.Add_Click({ $controls.tbConsole.Clear(); Do-Scan | Out-Null; Write-UILog "Сканирование завершено." })
-$controls.cbOnlyFound.Add_Click({ $null = Do-Scan })
+$controls.btnScan.Add_Click({ Start-ScanAsync })
+$controls.btnScanResults.Add_Click({ Start-ScanAsync })
+$controls.dgScan.Add_Loaded({ Update-ScanColumnWidths })
+$controls.dgScan.Add_SizeChanged({ Update-ScanColumnWidths })
+$controls.tbScanSearch.Add_TextChanged({ Apply-ScanSearch })
+$controls.cbOnlyFound.Add_Click({
+  if ($null -ne $global:LastScanRawItems) {
+    Apply-ScanItems -RawItems $global:LastScanRawItems -OnlyFound ([bool]$controls.cbOnlyFound.IsChecked)
+  } else {
+    Write-UILog "Сначала выполните сканирование. Запускается фоновое сканирование..."
+    Start-ScanAsync
+  }
+})
 $controls.btnExportCsv.Add_Click({ $items=$controls.dgScan.ItemsSource; if($items){ $p=Join-Path $global:CleanupRoot "scan.csv"; $items|Export-Csv -Path $p -NoTypeInformation -Encoding UTF8; Write-UILog ("Экспорт CSV: {0}" -f $p); Start-Process $p } })
 $controls.btnExportJson.Add_Click({ $items=$controls.dgScan.ItemsSource; if($items){ $p=Join-Path $global:CleanupRoot "scan.json"; $items|ConvertTo-Json -Depth 4|Set-Content -Path $p -Encoding UTF8; Write-UILog ("Экспорт JSON: {0}" -f $p); Start-Process $p } })
 $controls.btnExportHtml.Add_Click({ $items=$controls.dgScan.ItemsSource; if($items){ $p=Resolve-Env $controls.tbHtmlPath.Text; Save-HtmlReport -Items $items -Path $p; Write-UILog ("Экспорт HTML: {0}" -f $p); Start-Process $p } })
-$controls.btnPing.Add_Click({ Invoke-PingFirstBit })
-$controls.btnOpenLog.Add_Click({ $p=Resolve-Env $controls.tbLogPath.Text; if(Test-Path $p){ Start-Process $p } })
-$controls.btnOpenHtml.Add_Click({ $p=Resolve-Env $controls.tbHtmlPath.Text; if(Test-Path $p){ Start-Process $p } })
+$controls.btnPing.Add_Click({
+  $consoleStart = ([string]$controls.tbConsole.Text).Length
+  Invoke-PingFirstBit
+  $consoleText = [string]$controls.tbConsole.Text
+  if ($consoleText.Length -gt $consoleStart) {
+    $pingOutput = $consoleText.Substring($consoleStart)
+    $controls.tbDiag.AppendText($pingOutput)
+    $controls.tbDiag.ScrollToEnd()
+  }
+})
+$controls.btnOpenLog.Add_Click({ $p=Resolve-Env $controls.tbLogPath.Text; if(Test-Path -LiteralPath $p -PathType Leaf){ Start-Process $p } })
+$controls.btnOpenHtml.Add_Click({ $p=Resolve-Env $controls.tbHtmlPath.Text; if(Test-Path -LiteralPath $p -PathType Leaf){ Start-Process $p } })
 $controls.btnAnalyze.Add_Click({
   $controls.tbConsole.Clear()
   Run-Flow ($controls.cbFull.IsChecked) ($controls.cbServices.IsChecked) ($controls.cbFolders.IsChecked) ($controls.cbRegistry.IsChecked) ($controls.cbBackup.IsChecked) ($controls.cbForce.IsChecked) $true ($controls.cbHtml.IsChecked) $false ($controls.cbSelectionOnly.IsChecked)
@@ -1398,8 +1954,8 @@ $controls.btnAnalyze.Add_Click({
 $controls.btnRun.Add_Click({
   $controls.tbConsole.Clear()
   $r = [System.Windows.MessageBox]::Show(
-    "Are you sure? Cleanup may affect the network stack.",
-    "Confirmation",
+    "Выполнить очистку? Это действие может изменить сетевые настройки системы.",
+    "Подтверждение очистки",
     "YesNo",
     "Warning"
   )
@@ -1419,8 +1975,23 @@ $controls.btnRun.Add_Click({
 })
 $controls.btnClose.Add_Click({ $window.Close() })
 
+$controls.btnClearLog.Add_Click({
+  $controls.tbConsole.Clear()
+})
+$controls.btnClearDiag.Add_Click({
+  $controls.tbDiag.Clear()
+})
+$controls.btnCopyDiag.Add_Click({
+  if ([string]::IsNullOrWhiteSpace([string]$controls.tbDiag.Text)) { return }
+  try {
+    [System.Windows.Clipboard]::SetText([string]$controls.tbDiag.Text)
+  } catch {
+    Write-UILog ("Не удалось скопировать диагностику в буфер обмена: {0}" -f $_.Exception.Message) "WARN"
+  }
+})
+
 $controls.btnDiag.Add_Click({ $controls.tbDiag.Clear(); Test-VpnDiagnostics -TargetHost "vpn.1cbit.ru" })
-$controls.btnDisableAdapters.Add_Click({ Disable-SuspiciousAdapters })
+$controls.btnDisableAdapters.Add_Click({ Show-SuspiciousAdapters })
 $controls.btnStopGoodbye.Add_Click({ Stop-ConflictTools })
 
 $window.ShowDialog() | Out-Null
